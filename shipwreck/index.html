@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en-AU"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Shipwreck">
+<meta name="theme-color" content="#12384A">
+<meta name="robots" content="noindex,nofollow">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="index.webmanifest">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Shipwreck Coast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,500;9..144,650&display=swap">
+<style>
+/* Layout: one-handed phone guide. Deep sea header, day tabs, stacked cards, bottom nav with three views */
+:root{
+  --deep:#12384A; --on-deep:#FFFFFF; --sea:#1F6B78; --on-sea:#FFFFFF; --sun:#D9963F; --on-sun:#14262D;
+  --bg:#EEF2F1; --card:#FFFFFF; --ink:#14262D; --muted:#4E6168; --line:#D3DCDC; --alert-bg:#FBEFDF; --done:#8A9A9F;
+  --display:"Fraunces",Georgia,serif; --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --deep:#0B2330; --sea:#5FB0BC; --on-sea:#0B1A20; --sun:#E3A458; --on-sun:#14100A;
+  --bg:#0E1A1F; --card:#172830; --ink:#E6EEEF; --muted:#9FB2B7; --line:#2A3E46; --alert-bg:#33291A; --done:#6E8186; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --deep:#0B2330; --sea:#5FB0BC; --on-sea:#0B1A20; --sun:#E3A458; --on-sun:#14100A;
+  --bg:#0E1A1F; --card:#172830; --ink:#E6EEEF; --muted:#9FB2B7; --line:#2A3E46; --alert-bg:#33291A; --done:#6E8186; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.55 var(--body);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--deep)}
+.app{max-width:560px;margin:0 auto;min-height:100%;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:650;margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+
+header.top{background:var(--deep);color:var(--on-deep);padding-block:22px 18px;display:grid;gap:4px}
+.top h1{font-size:30px}
+.top .sub{opacity:.85;font-size:15px}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--deep);display:flex;gap:6px;overflow-x:auto;padding-block:10px 12px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 52px;font:700 13px/1.15 var(--body);border:0;border-radius:10px;padding:8px 4px;background:rgba(255,255,255,.12);color:var(--on-deep);cursor:pointer;text-align:center}
+.tab b{display:block;font-size:19px;font-family:var(--display)}
+.tab[aria-selected="true"]{background:var(--sun);color:var(--on-sun)}
+
+main{display:grid;gap:14px;padding-block:16px}
+.card{background:var(--card);border-radius:14px;padding:16px;display:grid;gap:12px}
+.meta{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card h2{font-size:24px}
+.card h3{font-size:19px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--bg);border-radius:10px;padding:9px 10px;font-variant-numeric:tabular-nums}
+.stat b{display:block;font-family:var(--display);font-size:20px;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+.alert{border-left:5px solid var(--sun);background:var(--alert-bg);border-radius:0 10px 10px 0;padding:10px 12px;display:grid;gap:2px}
+.alert b{font-size:16px}
+.alert span{font-size:15px}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{display:flex;align-items:center;justify-content:center;text-align:center;min-height:50px;padding:10px;border-radius:12px;background:var(--sea);color:var(--on-sea);font-weight:700;font-size:16px;text-decoration:none;border:0;cursor:pointer;font-family:var(--body)}
+.btn.alt{background:transparent;color:var(--sea);box-shadow:inset 0 0 0 2px var(--sea)}
+.btn.wide{grid-column:1/-1}
+.btn:focus-visible,.tab:focus-visible,.nav button:focus-visible,.check label:focus-within{outline:3px solid var(--sun);outline-offset:2px}
+ul.hl{margin:0;padding-left:20px;display:grid;gap:6px}
+.notes{color:var(--muted);font-size:15px}
+
+.check{display:grid;gap:4px}
+.check label{display:flex;gap:12px;align-items:center;padding:9px 4px;border-radius:8px;cursor:pointer;min-height:44px}
+.check input{appearance:none;width:26px;height:26px;border:2.5px solid var(--sea);border-radius:7px;flex:0 0 auto;display:grid;place-items:center;margin:0;cursor:pointer}
+.check input:checked{background:var(--sea)}
+.check input:checked::after{content:"";width:7px;height:13px;border:solid var(--on-sea);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.check input:checked + span{text-decoration:line-through;color:var(--done)}
+.check-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);border-radius:12px;padding:4px}
+.who button{font:700 16px var(--body);border:0;border-radius:9px;padding:10px;background:transparent;color:var(--muted);cursor:pointer;min-height:44px}
+.who button[aria-selected="true"]{background:var(--sea);color:var(--on-sea)}
+.who button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+details.tides summary{cursor:pointer;font-family:var(--display);font-size:19px;font-weight:650;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+details.tides summary::-webkit-details-marker{display:none}
+details.tides summary::after{content:"Show";font:700 14px var(--body);color:var(--sea)}
+details.tides[open] summary::after{content:"Hide"}
+.tide-day{display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--line)}
+.tide-day:last-child{border-bottom:0}
+.tide-day.is-today{background:var(--alert-bg);border-radius:10px;padding:10px;border-bottom:0}
+.tide-day b{font-size:16px}
+.tide-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:16px;font-variant-numeric:tabular-nums}
+.tide-col{display:grid;gap:2px;align-content:start}
+.tide-col .k{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tide-col.lo .t{font-weight:700;color:var(--sea)}
+.tide-col small{color:var(--muted);font-size:13px;margin-left:4px}
+.tide-strip{background:var(--bg);border-radius:10px;padding:10px 12px;display:grid;gap:4px}
+.tide-strip .meta{font-size:12px}
+.textlink{color:var(--sea);font-weight:700}
+.edit-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--line);min-height:48px}
+.edit-row span{min-width:0;overflow-wrap:anywhere}
+.remove{font:700 14px var(--body);border:2px solid var(--line);color:var(--ink);background:none;border-radius:999px;padding:6px 12px;cursor:pointer;flex:0 0 auto}
+.add{display:flex;gap:8px}
+.add input{flex:1;min-width:0;font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.add input:focus{outline:none;border-color:var(--sea)}
+.add .btn{flex:0 0 auto;min-height:48px;padding:10px 18px}
+.remove:focus-visible,.reset:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.reset{font:inherit;font-size:14px;background:none;border:0;color:var(--sea);text-decoration:underline;cursor:pointer;padding:4px}
+
+.days{display:grid}
+.day-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;border-top:0;color:inherit;font:inherit;text-align:left;cursor:pointer;width:100%}
+.day-row:last-child{border-bottom:0}
+.day-row small{display:block;color:var(--muted);font-size:14px}
+.pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--bg);color:var(--muted);white-space:nowrap}
+.pill.today{background:var(--sun);color:var(--on-sun)}
+.pill.done{color:var(--done)}
+.big-num{font-family:var(--display);font-size:44px;line-height:1}
+.contact{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.contact:last-child{border-bottom:0}
+.contact div{min-width:0}
+.contact small{display:block;color:var(--muted);font-size:15px}
+.copy{font:700 14px var(--body);border:2px solid var(--sea);color:var(--sea);background:none;border-radius:999px;padding:6px 12px;cursor:pointer;flex:0 0 auto}
+.draft{font-size:13px;color:var(--muted);text-align:center;padding-block:4px}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.nav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr)}
+.nav button{font:700 15px var(--body);background:none;border:0;color:var(--muted);padding:14px 4px 16px;cursor:pointer;border-top:3px solid transparent}
+.nav button[aria-current="page"]{color:var(--sea);border-top-color:var(--sea)}
+</style>
+
+<div class="app">
+  <header class="top pad">
+    <h1>Shipwreck Coast</h1>
+    <p class="sub" id="trip-sub">Great Ocean Walk</p>
+  </header>
+  <nav class="tabs pad" id="tabs" role="tablist" aria-label="Days" hidden></nav>
+  <main class="pad" id="view"></main>
+</div>
+<nav class="nav" aria-label="Sections"><div class="nav-in">
+  <button type="button" id="nav-trip" data-view="trip">Trip</button>
+  <button type="button" id="nav-day" data-view="day">Days</button>
+</div></nav>
+
+<script>
+/* ===== Edit trip details here ===== */
+const START_DATE = "2026-11-03";   // Day 1. Every other date follows from this.
+
+const PEOPLE = ["mine"];   // one list; each phone keeps its own edits and ticks
+// A day's checklist can be one list for both, or { Tony:[...], Sharon:[...] } when they differ.
+const SAMPLE_CHECKLIST = ["Lunch box","Snack container","Water bottle and pouch","Lollies","Poncho","Puffer vest or jacket","Wind jacket","Backpack rain jacket","Aerogard","Sunscreen","Hat","Rubbish bags","Wipes","Tissues","Walking sticks"];
+
+const map = q => q;   // place names Google Maps can find
+const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+const walkUrl = (a,b) => "https://www.google.com/maps/dir/?api=1&travelmode=walking&origin=" + encodeURIComponent(a) + "&destination=" + encodeURIComponent(b);
+const GOW_SITE = "https://www.greatoceanwalk.com.au/";
+// Port Campbell predictions, AEDT, from tide-forecast.com (checked 25 Oct 2026). Heights in metres.
+const TIDE_DATA = {
+  "2026-11-03":[["High","5:16 am",1.0],["Low","10:42 am",0.65],["High","3:14 pm",0.9],["Low","10:24 pm",0.2]],
+  "2026-11-04":[["High","5:41 am",0.9],["Low","11:09 am",0.65],["High","3:26 pm",0.8],["Low","10:39 pm",0.35]],
+  "2026-11-05":[["High","5:54 am",0.8],["Low","11:48 am",0.65],["High","3:02 pm",0.7],["Low","10:25 pm",0.5]],
+  "2026-11-06":[["High","4:57 am",0.7],["Low","6:56 pm",0.45]],
+  "2026-11-07":[["High","2:49 am",0.7],["Low","7:28 am",0.6],["High","10:09 am",0.65],["Low","6:40 pm",0.35]],
+  "2026-11-08":[["High","2:05 am",0.8],["Low","7:47 am",0.55],["High","11:30 am",0.65],["Low","6:48 pm",0.2]]
+};
+
+const STAY = { name:"NRMA Port Campbell Holiday Park", address:"30 Morris St, Port Campbell VIC 3269", phone:"(03) 5598 6492",
+  dates:"Tue 3 Nov to Sat 7 Nov", times:"Check-in 2pm for cabins (11am for sites). Check-out 10am.", reception:"Reception 8am to 6pm. Arriving late? Ring ahead for an after-hours access code." };
+
+const DAYS = [
+  { title:"Loch Ard Gorge", short:"Loch Ard Gorge", km:"3.5 km", grade:"Easy", time:"1.5 hr",
+    when:"Afternoon", intro:"An easy afternoon stroll, 8 km drive from Port Campbell.",
+    start:["Loch Ard Gorge car park", map("Loch Ard Gorge car park, Port Campbell VIC")], finish:null,
+    walkTo:map("Razorback Lookout, Port Campbell VIC"),
+    alerts:[{t:"Steps to the beach", d:"A long staircase leads down into the gorge. Take it slowly on the way back up."}],
+    highlights:["Site of the Loch Ard wreck in 1878. Only two of the 54 on board survived, Tom Pearce and Eva Carmichael.","The Razorback and Island Archway lookouts","Loch Ard cemetery on the clifftop"] },
+  { title:"Castle Cove to Milanesia", short:"Castle Cove to Milanesia", km:"16 km", grade:"3/4", time:"6 hr",
+    intro:"Clifftop and beach walking, with a long stretch along Johanna Beach.",
+    start:["Castle Cove", map("Castle Cove Lookout, Great Ocean Road VIC")], finish:["Milanesia Beach", map("Milanesia Beach, Great Otway National Park VIC")],
+    alerts:[{t:"River crossing: Johanna River", d:"The only river crossing on this trip. It is best crossed near low tide, which today is around 11am."},
+            {t:"Beach walking", d:"Johanna Beach is easier on firm sand near low tide."}],
+    highlights:["Views back along the coast from Castle Cove","Johanna Beach, known for its big surf","Quiet, remote Milanesia Beach at the finish"] },
+  { title:"Milanesia to the Gables", short:"Milanesia to the Gables", km:"16.5 km", grade:"4", time:"6.5 hr",
+    intro:"One of the hilliest days, with lots of steep climbs and descents.",
+    start:["Milanesia Beach", map("Milanesia Beach, Great Otway National Park VIC")], finish:["The Gables Lookout", map("The Gables Lookout, Moonlight Head VIC")],
+    alerts:[{t:"Steep climbs", d:"Several long ups and downs. Walking sticks help on the descents."}],
+    highlights:["Ryans Den lookout","Moonlight Head clifftops","The Gables lookout, some of the highest sea cliffs in Australia"] },
+  { title:"The Gables to Twelve Apostles", short:"The Gables to Twelve Apostles", km:"20 km", grade:"4", time:"7 hr",
+    intro:"The longest day, finishing at the Twelve Apostles.",
+    start:["The Gables Lookout", map("The Gables Lookout, Moonlight Head VIC")], finish:["Twelve Apostles", map("Twelve Apostles Visitor Centre, Princetown VIC")],
+    alerts:[{t:"Low tide only: Wreck Beach", d:"The Wreck Beach section goes down a few hundred steps and is only possible at low tide. Today's low is not until about 7pm, so expect the high-tide route."},
+            {t:"Long day", d:"Start early and keep a steady pace. Plenty of places to rest along the clifftops."}],
+    highlights:["Ship anchors on Wreck Beach at low tide","Princetown and the Gellibrand River","Gibson Steps and the Twelve Apostles at the finish"] },
+  { title:"Cape Otway to Aire River", short:"Cape Otway to Aire River", km:"13 km", grade:"3", time:"4.5 hr",
+    intro:"A gentler day from the lighthouse, with a side trip to Rainbow Falls.",
+    start:["Cape Otway Lightstation", map("Cape Otway Lightstation VIC")], finish:["Aire River West Campground", map("Aire River West Campground, Hordern Vale VIC")],
+    alerts:[{t:"Check out by 10am", d:"Last morning at Port Campbell Holiday Park."},
+            {t:"Side trip: Rainbow Falls", d:"Check today's tides before heading down to the beach section."}],
+    highlights:["Cape Otway Lightstation, the oldest surviving lighthouse on mainland Australia","Rainbow Falls, a spring-fed trickle down a colourful, algae-covered cliff onto the rock platform","The Aire River estuary at the finish"] },
+  { title:"Apollo Bay", short:"Apollo Bay day", km:"Short", grade:"Easy", time:"Flexible",
+    intro:"A morning photo at the official trackhead, then a tourist day.",
+    start:["Great Ocean Walk trackhead", map("Great Ocean Walk trailhead, Apollo Bay VIC")], finish:["Visitor Information Centre", map("Great Ocean Road Visitor Information Centre, Apollo Bay VIC")],
+    alerts:[{t:"Optional walk", d:"An easy out and back on the track from Marengo Family Caravan Park, south of Apollo Bay."}],
+    extraMap:["Marengo Family Caravan Park", map("Marengo Family Caravan Park, Apollo Bay VIC")],
+    highlights:["Group photo at the official trackhead","Souvenir shop and a coffee in town","Seals are sometimes spotted on the reef off Marengo"] }
+];
+
+const CONTACTS = [
+  {name:"Walk group leader", detail:"Name and number to add", num:""},
+  {name:"Suz", detail:"Number to add", num:""}
+];
+/* ===== End of trip details ===== */
+
+const $ = s => document.querySelector(s);
+const DAY_MS = 86400000;
+const start = new Date(START_DATE + "T00:00:00");
+const dateOf = i => new Date(start.getTime() + i*DAY_MS);
+const fmt = (d,o) => d.toLocaleDateString("en-AU",o);
+const dow = i => fmt(dateOf(i),{weekday:"short"});
+const dnum = i => dateOf(i).getDate();
+const longDate = i => fmt(dateOf(i),{weekday:"long",day:"numeric",month:"long"});
+const isoOf = i => { const d=dateOf(i); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0") };
+const tideList = i => { const t=TIDE_DATA[isoOf(i)]; const col = k => `<div class="tide-col ${k==="Low"?"lo":""}"><span class="k">${k} tide</span>${t.filter(x=>x[0]===k).map(([,tm,h])=>`<span class="t">${tm}<small>${h.toFixed(1)} m</small></span>`).join("")}</div>`; return t ? `<div class="tide-list">${col("Low")}${col("High")}</div>` : `<span class="notes">No tide times for this date yet.</span>` };
+
+function todayIndex(){
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((now - start)/DAY_MS);
+}
+const ti = todayIndex();
+const focusIdx = Math.min(Math.max(ti,0), DAYS.length-1);
+
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)) }catch(e){ return null } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)) }catch(e){} }
+};
+let state = { view: (store.get("sc-view") === "day" ? "day" : "trip"), day: focusIdx, person: (PEOPLE.includes(store.get("sc-person")) ? store.get("sc-person") : PEOPLE[0]) };
+// Each person's list is the packing list until they edit it; edits apply to every day and are saved on that phone.
+const listKey = p => "sc-list-" + p;
+const listFor = (d,p) => { const own = store.get(listKey(p)); if (Array.isArray(own)) return own; const c = d.checklist || SAMPLE_CHECKLIST; return Array.isArray(c) ? c.slice() : (c[p] || []).slice() };
+const checkKey = (i,p) => "sc-tick-" + START_DATE + "-" + i + "-" + p;
+let editing = false;
+
+$("#trip-sub").textContent = `Great Ocean Walk · ${fmt(dateOf(0),{day:"numeric"})} to ${fmt(dateOf(DAYS.length-1),{day:"numeric",month:"long"})}`;
+
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])) }
+
+function statusFor(i){
+  if (i < ti) return ['done','Done'];
+  if (i === ti) return ['today','Today'];
+  return ['', dow(i)];
+}
+
+function renderTabs(){
+  const t = $("#tabs");
+  t.hidden = state.view !== "day";
+  t.innerHTML = DAYS.map((d,i)=>`<button class="tab" role="tab" id="tab-${i}" aria-selected="${i===state.day}" data-i="${i}">${dow(i)}<b>${dnum(i)}</b></button>`).join("");
+  t.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ state.day=+b.dataset.i; render(); window.scrollTo(0,0) });
+}
+
+function tripView(){
+  const f = DAYS[focusIdx];
+  let label;
+  if (ti < 0) label = `Starts in ${-ti} day${-ti===1?"":"s"}`;
+  else if (ti >= DAYS.length) label = "Trip complete";
+  else label = `Today · ${fmt(dateOf(ti),{weekday:"short",day:"numeric",month:"short"})}`;
+  const lead = ti < 0 ? "First up" : ti >= DAYS.length ? "Last day" : "";
+  return `
+  <section class="card">
+    <span class="meta">${label}</span>
+    <h2>${lead ? lead + ": " : ""}${esc(f.title)}</h2>
+    <p>${esc(f.intro)}</p>
+    <div class="btns"><button class="btn" id="open-focus">Open day</button><a class="btn alt" href="${mapUrl(f.start[1])}" target="_blank" rel="noopener">Start in Maps</a></div>
+  </section>
+  <section class="card">
+    <h3>The six days</h3>
+    <div class="days">${DAYS.map((d,i)=>{const [c,l]=statusFor(i);return `
+      <button class="day-row" data-i="${i}"><span>${esc(d.short)}<small>${fmt(dateOf(i),{weekday:"short",day:"numeric",month:"short"})} · ${d.km} · ${/^[0-9]/.test(d.grade)?"Grade "+d.grade:d.grade}</small></span><span class="pill ${c}">${l}</span></button>`}).join("")}
+    </div>
+  </section>
+  <section class="card">
+    <details class="tides" id="tides">
+      <summary>Tide times</summary>
+      <p class="notes" style="margin-top:8px">Port Campbell, close enough for the whole coast. Small tides this week, so low tide is never very low.</p>
+      <div>${DAYS.map((d,i)=>`<div class="tide-day ${i===ti?"is-today":""}"><b>${fmt(dateOf(i),{weekday:"short",day:"numeric",month:"short"})}${i===ti?" · Today":""}</b>${tideList(i)}</div>`).join("")}</div>
+    </details>
+  </section>
+  <p class="draft">Draft guide. Details still to be checked.</p>`;
+}
+
+function dayView(){
+  const i = state.day, d = DAYS[i];
+  const items = listFor(d, state.person);
+  const ticked = store.get(checkKey(i, state.person)) || [];
+  const done = items.filter(t=>ticked.includes(t)).length;
+  return `
+  <section class="card">
+    <span class="meta">Day ${i+1} · ${longDate(i)}${d.when?" · "+d.when:""}</span>
+    <h2>${esc(d.title)}</h2>
+    <p>${esc(d.intro)}</p>
+    <div class="stats">
+      <div class="stat"><b>${d.km}</b><span>distance</span></div>
+      <div class="stat"><b>${d.grade}</b><span>grade</span></div>
+      <div class="stat"><b>${d.time}</b><span>approx.</span></div>
+    </div>
+    <div class="tide-strip"><span class="meta">Today's tides</span>${tideList(i)}</div>
+    ${d.alerts.map(a=>`<div class="alert"><b>${esc(a.t)}</b><span>${esc(a.d)}</span></div>`).join("")}
+    <div class="btns">
+      <a class="btn${d.finish?"":" wide"}" href="${mapUrl(d.start[1])}" target="_blank" rel="noopener">Start: ${esc(d.start[0])}</a>
+      ${d.finish?`<a class="btn" href="${mapUrl(d.finish[1])}" target="_blank" rel="noopener">Finish: ${esc(d.finish[0])}</a>`:""}
+      ${d.extraMap?`<a class="btn alt wide" href="${mapUrl(d.extraMap[1])}" target="_blank" rel="noopener">${esc(d.extraMap[0])}</a>`:""}
+    </div>
+  </section>
+  <section class="card">
+    <h3>Look out for</h3>
+    <ul class="hl">${d.highlights.map(h=>`<li>${esc(h)}</li>`).join("")}</ul>
+  </section>
+  <section class="card">
+    <div class="check-head"><h3>Checklist</h3><span class="meta" id="count">${done} of ${items.length}</span></div>
+    ${PEOPLE.length < 2 ? "" : `<div class="who" role="tablist" aria-label="Whose checklist">${PEOPLE.map(p=>`<button role="tab" id="who-${p}" data-p="${p}" aria-selected="${p===state.person}">${p}</button>`).join("")}</div>`}
+    ${editing ? `
+    <div>${items.map((t,j)=>`<div class="edit-row"><span>${esc(t)}</span><button class="remove" data-j="${j}" id="rm-${j}">Remove</button></div>`).join("")}</div>
+    <form class="add" id="add-form"><input id="add-item" type="text" placeholder="Add an item" aria-label="New item" autocomplete="off"><button class="btn" type="submit">Add</button></form>
+    <p class="notes">Changes apply to every day, and only on this phone.</p>
+    <div class="check-head"><button class="reset" id="restore">Go back to the original list</button><button class="btn" id="edit-done">Done</button></div>` : `
+    <div class="check" id="check">${items.map((t,j)=>`
+      <label><input type="checkbox" id="c-${i}-${state.person}-${j}" data-t="${esc(t)}" ${ticked.includes(t)?"checked":""}><span>${esc(t)}</span></label>`).join("")}
+    </div>
+    <div class="check-head"><button class="reset" id="edit-list">Edit list</button><button class="reset" id="reset">Untick all</button></div>`}
+  </section>`;
+}
+
+function contactsView(){
+  return `
+  <section class="card">
+    <span class="meta">Emergency</span>
+    <span class="big-num">000</span>
+    <p>No coverage? On iPhone 14 or later, Emergency SOS via satellite can still reach help.</p>
+  </section>
+  <section class="card">
+    <span class="meta">Where we're staying · ${STAY.dates}</span>
+    <h3>${STAY.name}</h3>
+    <div class="contact"><div><b>${STAY.phone}</b><small>${STAY.address}</small></div><button class="copy" data-n="${STAY.phone}" id="copy-stay">Copy</button></div>
+    <p class="notes">${STAY.times} ${STAY.reception}</p>
+    <a class="btn alt" href="${mapUrl(STAY.address)}" target="_blank" rel="noopener">Open in Maps</a>
+  </section>
+  <section class="card">
+    <h3>Contacts</h3>
+    <div>${CONTACTS.map((c,k)=>`
+      <div class="contact"><div><b>${esc(c.name)}</b><small>${esc(c.num||c.detail)}</small></div>${c.num?`<button class="copy" data-n="${esc(c.num)}" id="copy-${k}">Copy</button>`:""}</div>`).join("")}
+    </div>
+  </section>`;
+}
+
+function render(){
+  store.set("sc-view", state.view);
+  document.querySelectorAll(".nav button").forEach(b=>{ if (b.dataset.view===state.view) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current") });
+  renderTabs();
+  const v = $("#view");
+  v.innerHTML = state.view==="trip" ? tripView() : dayView();
+
+  if (state.view==="trip"){
+    $("#open-focus").onclick=()=>{ state.view="day"; state.day=focusIdx; render() };
+    v.querySelectorAll(".day-row").forEach(r=>r.onclick=()=>{ state.view="day"; state.day=+r.dataset.i; render(); window.scrollTo(0,0) });
+  }
+  if (state.view==="day"){
+    const key = checkKey(state.day, state.person);
+    v.querySelectorAll(".who button").forEach(b=>b.onclick=()=>{ state.person=b.dataset.p; store.set("sc-person", state.person); const y=window.scrollY; render(); window.scrollTo(0,y) });
+    const keepPlace = ()=>{ const y=window.scrollY; render(); window.scrollTo(0,y) };
+    if (editing){
+      const list = listFor(DAYS[state.day], state.person);
+      const saveList = l => { store.set(listKey(state.person), l); keepPlace() };
+      v.querySelectorAll(".remove").forEach(b=>b.onclick=()=>{ list.splice(+b.dataset.j,1); saveList(list) });
+      $("#add-form").onsubmit = e => { e.preventDefault(); const t=$("#add-item").value.trim(); if(!t) return; if(!list.includes(t)) list.push(t); saveList(list); const f=$("#add-item"); if(f) f.focus() };
+      $("#restore").onclick=()=>{ try{ localStorage.removeItem(listKey(state.person)) }catch(e){} keepPlace() };
+      $("#edit-done").onclick=()=>{ editing=false; keepPlace() };
+    } else {
+      const items = v.querySelectorAll("#check input");
+      const save = ()=>{ const on=[...items].filter(x=>x.checked).map(x=>x.dataset.t); store.set(key,on); $("#count").textContent=`${on.length} of ${items.length}` };
+      items.forEach(x=>x.onchange=save);
+      $("#reset").onclick=()=>{ items.forEach(x=>x.checked=false); save() };
+      $("#edit-list").onclick=()=>{ editing=true; keepPlace() };
+    }
+    const tab = $("#tab-"+state.day); if (tab) tab.scrollIntoView({inline:"center",block:"nearest"});
+  }
+  v.querySelectorAll(".copy").forEach(b=>b.onclick=async()=>{
+    try{ await navigator.clipboard.writeText(b.dataset.n); b.textContent="Copied" }catch(e){ b.textContent=b.dataset.n }
+  });
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{ state.view=b.dataset.view; if(state.view==="day") state.day=state.day??focusIdx; render(); window.scrollTo(0,0) });
+render();
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+
+
+</body></html>
