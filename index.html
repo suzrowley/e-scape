@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en-AU"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="E-scape">
+<meta name="robots" content="noindex,nofollow">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="index.webmanifest">
+<title>The Great E-scape</title>
+
+
+<meta name="theme-color" content="#173A40">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,500;9..144,650&display=swap">
+</head><body>
+<style>
+/* Layout: one-handed phone guide. River header with progress spine, date tabs, stacked cards, bottom nav with Trip and Days */
+:root{
+  --deep:#173A40; --on-deep:#FFFFFF; --sea:#2F6F73; --on-sea:#FFFFFF; --sun:#D2A23A; --on-sun:#15262A;
+  --bg:#EEF2EF; --card:#FFFFFF; --ink:#15262A; --muted:#4D6064; --line:#D3DDDA; --alert-bg:#FAF0D9; --done:#8A9A9C; --flag-bg:#E6EEEC;
+  --display:"Fraunces",Georgia,serif; --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --deep:#0D2428; --sea:#6DB5B5; --on-sea:#0B1A1C; --sun:#E2B655; --on-sun:#15100A;
+  --bg:#0E1A1C; --card:#172A2D; --ink:#E5EEEC; --muted:#9DB1B1; --line:#29403F; --alert-bg:#33291A; --done:#6E8384; --flag-bg:#1D3134; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --deep:#0D2428; --sea:#6DB5B5; --on-sea:#0B1A1C; --sun:#E2B655; --on-sun:#15100A;
+  --bg:#0E1A1C; --card:#172A2D; --ink:#E5EEEC; --muted:#9DB1B1; --line:#29403F; --alert-bg:#33291A; --done:#6E8384; --flag-bg:#1D3134; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:17px/1.55 var(--body);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--deep)}
+.app{max-width:560px;margin:0 auto;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:650;margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+button{font-family:var(--body)}
+
+header.top{background:var(--deep);color:var(--on-deep);padding-block:22px 18px;display:grid;gap:4px}
+.top h1{font-size:30px}
+.top .sub{opacity:.85;font-size:15px}
+
+/* Progress spine */
+.spine{margin-top:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 10px 10px;display:grid;gap:8px}
+.spine-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.spine-top b{color:var(--sun);letter-spacing:0;font-size:15px;font-variant-numeric:tabular-nums}
+.nodes{position:relative;display:flex;justify-content:space-between}
+.track,.fill{position:absolute;left:14px;top:24px;height:4px;border-radius:2px}
+.track{right:14px;background:rgba(255,255,255,.2)}
+.fill{background:var(--sun);width:0;transition:width .4s}
+.node{position:relative;z-index:1;display:grid;justify-items:center;gap:4px;background:none;border:0;color:var(--on-deep);font:12px/1.1 var(--body);padding:0;cursor:pointer;width:42px;font-variant-numeric:tabular-nums}
+.node .km{opacity:.8}
+.node i{width:16px;height:16px;border-radius:50%;background:var(--deep);border:2.5px solid rgba(255,255,255,.55)}
+.node.done i{background:var(--sun);border-color:var(--sun)}
+.node.next i{background:var(--on-deep);border-color:var(--sun)}
+@media (prefers-reduced-motion:no-preference){.node.next i{animation:pulse 2s infinite}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(210,162,58,.6)}50%{box-shadow:0 0 0 6px rgba(210,162,58,0)}}
+.node:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--deep);display:flex;gap:6px;overflow-x:auto;padding-block:10px 12px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 52px;position:relative;font:700 13px/1.15 var(--body);border:0;border-radius:10px;padding:8px 4px;background:rgba(255,255,255,.12);color:var(--on-deep);cursor:pointer;text-align:center}
+.tab b{display:block;font-size:19px;font-family:var(--display)}
+.tab.ride{box-shadow:inset 0 -3px 0 var(--sun)}
+.tab[aria-selected="true"]{background:var(--sun);color:var(--on-sun);box-shadow:none}
+.tab .dot{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--sun)}
+.tab[aria-selected="true"] .dot{background:var(--on-sun)}
+
+main{display:grid;gap:14px;padding-block:16px}
+.card{background:var(--card);border-radius:14px;padding:16px;display:grid;gap:12px}
+.meta{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card h2{font-size:25px}
+.card h3{font-size:19px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat{background:var(--bg);border-radius:10px;padding:9px 10px;font-variant-numeric:tabular-nums}
+.stat b{display:block;font-family:var(--display);font-size:20px;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+.stat.t b{font-family:var(--body);font-size:16px;line-height:1.3}
+.terrain{font-size:16px;color:var(--muted)}
+.alert{border-left:5px solid var(--sun);background:var(--alert-bg);border-radius:0 10px 10px 0;padding:10px 12px;display:grid;gap:2px}
+.alert b{font-size:16px}
+.alert span{font-size:15px}
+.flag{background:var(--flag-bg);border-radius:10px;padding:10px 12px;font-size:15px}
+.flag b{display:block}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{display:flex;align-items:center;justify-content:center;text-align:center;min-height:50px;padding:10px;border-radius:12px;background:var(--sea);color:var(--on-sea);font-weight:700;font-size:16px;text-decoration:none;border:0;cursor:pointer;line-height:1.25}
+.btn.alt{background:transparent;color:var(--sea);box-shadow:inset 0 0 0 2px var(--sea)}
+.btn.wide{grid-column:1/-1}
+.btn:focus-visible,.tab:focus-visible,.nav button:focus-visible,.link:focus-visible,.stop:focus-visible,.ms:focus-visible,summary:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+ul.hl{margin:0;padding-left:20px;display:grid;gap:6px}
+.notes{color:var(--muted);font-size:15px}
+.link{font:inherit;font-size:15px;background:none;border:0;color:var(--sea);font-weight:700;cursor:pointer;padding:6px 2px;text-decoration:underline;text-underline-offset:3px}
+.row-end{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* Day timeline */
+.flow{display:grid;gap:12px}
+.ms{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:2px dashed var(--sea);border-radius:14px;padding:12px 14px;color:inherit;font:inherit;cursor:pointer}
+.ms i{width:24px;height:24px;border-radius:50%;border:3px solid var(--sea);flex:0 0 auto;display:grid;place-items:center}
+.ms.on{border-style:solid;background:color-mix(in srgb,var(--sea) 10%,var(--card))}
+.ms.on i{background:var(--sea)}
+.ms.on i::after{content:"";width:6px;height:11px;border:solid var(--on-sea);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.ms b{display:block;font-size:17px}
+.ms small{display:block;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.sec{background:var(--card);border-radius:14px;padding:12px 14px;display:grid;gap:4px}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sec-head .meta{flex:1}
+.sec-tools{display:flex;gap:4px;align-items:center}
+.sec-tools .link{font-size:14px}
+.chev{font:700 18px var(--body);background:none;border:0;color:var(--muted);cursor:pointer;padding:4px 8px;transition:transform .2s}
+.sec.closed .chev{transform:rotate(-90deg)}
+.sec.closed .stops{display:none}
+.stops{display:grid}
+.stop-row{display:flex;gap:8px;align-items:stretch}
+.stop{flex:1;display:flex;gap:12px;align-items:flex-start;text-align:left;background:none;border:0;color:inherit;font:inherit;padding:10px 2px;cursor:pointer;border-radius:8px}
+.stop .c{width:24px;height:24px;border-radius:50%;border:2.5px solid var(--sea);flex:0 0 auto;margin-top:2px;display:grid;place-items:center}
+.stop.on .c{background:var(--sea)}
+.stop.on .c::after{content:"";width:6px;height:11px;border:solid var(--on-sea);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.stop.on .nm{text-decoration:line-through;color:var(--done)}
+.stop.on .ds{opacity:.6}
+.stop .nm{font-weight:700;font-size:17px}
+.stop .ds{display:block;font-size:15px;color:var(--muted);line-height:1.4}
+.stop .lc{display:block;font-size:14px;color:var(--muted)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--muted);margin-left:6px;vertical-align:2px;white-space:nowrap}
+.tag.book{background:var(--sun);color:var(--on-sun)}
+.hide-btn{flex:0 0 auto;align-self:center;font:700 14px var(--body);border:2px solid var(--line);color:var(--ink);background:none;border-radius:999px;padding:6px 12px;cursor:pointer}
+.hide-btn.restore{border-color:var(--sea);color:var(--sea)}
+.stop-row.hid .stop{opacity:.45}
+.prompt{background:var(--alert-bg);border-radius:10px;padding:10px 12px;display:grid;gap:8px;font-size:15px}
+.prompt .btns .btn{min-height:42px;font-size:15px}
+.phone{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 0 8px 36px}
+.phone span{font-size:15px;font-variant-numeric:tabular-nums}
+.copy{font:700 14px var(--body);border:2px solid var(--sea);color:var(--sea);background:none;border-radius:999px;padding:5px 12px;cursor:pointer;flex:0 0 auto}
+
+/* Packing */
+details.pack>summary,details.sub>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}
+details.pack>summary::-webkit-details-marker,details.sub>summary::-webkit-details-marker{display:none}
+details.pack>summary h3{font-size:21px}
+details.pack>summary::after,details.sub>summary::after{content:"⌄";font:700 18px var(--body);color:var(--muted);transition:transform .2s;transform:rotate(-90deg)}
+details[open].pack>summary::after,details[open].sub>summary::after{transform:none}
+details.head>summary{align-items:flex-start}
+.head-sum{display:grid;gap:4px;min-width:0}
+.head-sum h2{font-size:25px}
+details.head[open] .when-closed{display:none}
+.look{display:grid;gap:6px;padding-top:4px}
+.pack-body{display:grid;gap:10px;margin-top:12px}
+details.sub{background:var(--bg);border-radius:12px;padding:10px 12px}
+details.sub>summary b{font-size:17px}
+details.sub>summary .meta{margin-left:auto}
+.check{display:grid;gap:2px;margin-top:6px}
+.check label{display:flex;gap:12px;align-items:center;padding:8px 2px;border-radius:8px;cursor:pointer;min-height:44px}
+.check input{appearance:none;width:26px;height:26px;border:2.5px solid var(--sea);border-radius:7px;flex:0 0 auto;display:grid;place-items:center;margin:0;cursor:pointer;background:var(--card)}
+.check input:checked{background:var(--sea)}
+.check input:checked::after{content:"";width:7px;height:13px;border:solid var(--on-sea);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.check input:checked + span{text-decoration:line-through;color:var(--done)}
+.check input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.edit-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 2px;border-bottom:1px solid var(--line);min-height:46px}
+.edit-row span{min-width:0;overflow-wrap:anywhere}
+.edit-row input,.rename input{flex:1;min-width:0;font:inherit;font-size:max(16px,1em);padding:8px 10px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.edit-row input:focus,.rename input:focus{outline:none;border-color:var(--sea)}
+.rename{display:flex;gap:8px;align-items:center;margin:8px 0 4px}
+.rename label{font-weight:700;font-size:14px;color:var(--muted,inherit)}
+.newsec{margin-top:4px}
+.add{display:flex;gap:8px;margin-top:8px}
+.add input{flex:1;min-width:0;font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.add input:focus{outline:none;border-color:var(--sea)}
+.add .btn{flex:0 0 auto;min-height:46px;padding:8px 16px}
+textarea{width:100%;min-height:110px;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);resize:vertical}
+textarea:focus{outline:none;border-color:var(--sea)}
+.saved{font-size:13px;color:var(--sea);font-weight:700;opacity:0;transition:opacity .3s}
+.saved.show{opacity:1}
+
+/* Trip view */
+.days{display:grid}
+.day-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;width:100%}
+.day-row:last-child{border-bottom:0}
+.day-row small{display:block;color:var(--muted);font-size:14px}
+.pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--bg);color:var(--muted);white-space:nowrap}
+.pill.today{background:var(--sun);color:var(--on-sun)}
+.pill.done{color:var(--done)}
+.tally{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.big-num{font-family:var(--display);font-size:44px;line-height:1}
+.surprise{background:var(--sun);color:var(--on-sun)}
+.surprise .meta{color:inherit;opacity:.8}
+.complete{background:var(--sea);color:var(--on-sea)}
+.complete .meta{color:inherit;opacity:.85}
+.water{background:var(--flag-bg);border-radius:10px;padding:10px 12px;display:grid;gap:2px}
+.water b{font-size:16px}
+.water span{font-size:15px}
+.contact{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.contact:last-child{border-bottom:0}
+.contact>div{min-width:0;display:grid;gap:1px}
+.contact small{color:var(--muted);font-size:14px}
+.contact .num{font-size:16px;font-variant-numeric:tabular-nums}
+.bk{font-size:14px;font-weight:700;color:var(--muted)}
+.bk.yes{color:var(--sea)}
+.draft{font-size:13px;color:var(--muted);text-align:center;padding-block:4px}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:15px;font-weight:700;z-index:20;max-width:calc(100% - 32px);text-align:center}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.nav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr)}
+.nav button{font:700 15px var(--body);background:none;border:0;color:var(--muted);padding:14px 4px 16px;cursor:pointer;border-top:3px solid transparent}
+.nav button[aria-current="page"]{color:var(--sea);border-top-color:var(--sea)}
+</style>
+
+<div class="app">
+  <header class="top pad" id="top">
+    <h1>The Great E-scape</h1>
+    <p class="sub">Murray to Mountains Rail Trail · 9 to 18 November</p>
+    <div class="spine" id="spine"></div>
+  </header>
+  <nav class="tabs pad" id="tabs" role="tablist" aria-label="Days" hidden></nav>
+  <main class="pad" id="view"></main>
+</div>
+<nav class="nav" aria-label="Sections"><div class="nav-in">
+  <button type="button" id="nav-trip" data-view="trip">Trip</button>
+  <button type="button" id="nav-day" data-view="day">Days</button>
+</div></nav>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ===== Edit trip details here ===== */
+const TRIP_NAME = "The Great E-scape";
+const TOTAL_KM = 210;
+// Progress spine: km and short label for each dot. "day" is the day it opens.
+const SPINE = [
+  {km:0,   label:"Wang.",   day:"r1"},
+  {km:28,  label:"Everton", day:"r1"},
+  {km:44,  label:"Beech.",  day:"r1"},
+  {km:87,  label:"Myrtle.", day:"r2"},
+  {km:116, label:"Bright",  day:"r2"},
+  {km:145, label:"Myrtle.", day:"r3"},
+  {km:210, label:"Wang.",   day:"r4"}
+];
+
+// One master packing list, the same every day. Each phone can edit its own copy.
+const PACKING = [
+  {name:"Bike top", items:["Warm gloves","Glasses","Wallet","Poncho","Vest","Puffer","Buff","Neon vest","Shokz","Wet wipes","Aero guard","Tissues","Snacks","Rubbish bags"]},
+  {name:"Pannier", items:["Battery charger","Umbrella","Toiletries","Device chargers","Cap","Shoes","Towel","Spare pants","Light rain jacket","2 x long sleeve tops","1 x T-shirt","3 x underwear","3 x socks","PJs","First aid kit","Puncture kit","Electric pump and battery"]},
+  {name:"General", items:["Water bottle","Suncream"]}
+];
+
+// End of day checklist, the same every evening. Each phone can edit its own copy.
+const END_OF_DAY = [
+  {name:"Bikes", items:["Charge e-bike batteries","Bikes locked or stored inside","Quick tyre and brake check"]},
+  {name:"Gear", items:["Charge phones","Charge Shokz","Refill water bottles","Hang up anything wet"]},
+  {name:"Tomorrow", items:["Check tomorrow's distance and start","Check any bookings","Pack the bike top bag"]}
+];
+
+// Phone numbers. Each one gets a Copy button. Leave num empty until you have it.
+const CONTACTS = [
+  {name:"Driftwood Townhouse", detail:"Lakes Entrance · 9 and 10 Nov · Airbnb, so message the host in the Airbnb app", num:""},
+  {name:"Painters Island Holiday Park", detail:"Wangaratta · 11 and 15 Nov", num:"03 5721 3380"},
+  {name:"Armour Motor Inn", detail:"Beechworth · 12 Nov", num:"03 5728 1466"},
+  {name:"Adina Lodge", detail:"Bright · 13 Nov", num:"03 5755 1531"},
+  {name:"Myrtleford Hotel", detail:"Myrtleford · 14 Nov", num:"0497 534 278"},
+  {name:"Goldfield Holiday Units", detail:"Bright · 16 to 18 Nov", num:"03 5750 1295"}
+];
+// Bike shops for a flat tyre or a battery problem, in trail order
+const BIKE_SHOPS = [
+  {town:"Wangaratta", name:"West End Cycles", detail:"25 Muntz Street. Servicing and repairs, e-bike hire.", num:"03 5721 4519"},
+  {town:"Beechworth", name:"Beechworth Cyclery", detail:"74 Ford Street. Repairs and e-bike servicing.", num:"0458 198 282"},
+  {town:"Myrtleford", name:"Myrtleford Cycle Centre", detail:"59A Clyde Street. Repairs and e-bike hire. Ask about a shuttle to Bright on Day 2.", num:"03 5752 1511"},
+  {town:"Bright", name:"All Terrain Cycles", detail:"105 Gavan Street. Servicing and repairs.", num:"03 5750 1372"}
+];
+
+// Messages that stay hidden until their date. They show on the Trip page that day and on that day's page from then on.
+// Example: "2026-11-12": {title:"Good luck today", text:"..."}
+// To do: Tony's birthday surprise for "2026-11-10".
+const SURPRISES = {};
+
+const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+
+// Each day: id, date, title, kind ("pre", "ride" or "post"), then its content.
+// "water" says where to find toilets and water. A stop with book:true appears in Bookings;
+// fill in booked:"Fri 7pm, 4 people" once it's booked.
+// In "flow", {ms:...} is a milestone, {sec:...} a section of tickable stops, {alert:...} a heads-up box.
+// A stop's "at" is cumulative trail km, used to nudge the progress spine between milestones.
+const DAYS = [
+  { id:"pre1", date:"2026-11-09", kind:"pre", title:"Lakes Entrance", short:"Lakes Entrance",
+    intro:"Pre-trip stay on the Esplanade.",
+    start:["Driftwood Townhouse","617 Esplanade, Lakes Entrance VIC 3909"],
+    flow:[
+      {sec:"Accommodation", stops:[{n:"Driftwood Townhouse", tag:"Check in 2pm", d:"Waterfront, central location.", loc:"617 Esplanade, Lakes Entrance 3909"}]}
+    ]},
+  { id:"bday", date:"2026-11-10", kind:"pre", title:"Exploring Lakes Entrance and circling the sun", short:"Lakes Entrance, Tony's birthday",
+    intro:"A free day in Lakes Entrance, and Tony's birthday.",
+    start:["Driftwood Townhouse","617 Esplanade, Lakes Entrance VIC 3909"],
+    flow:[
+      {sec:"Accommodation", stops:[{n:"Driftwood Townhouse", tag:"Second night", loc:"617 Esplanade, Lakes Entrance 3909"}]}
+    ]},
+  { id:"pre2", date:"2026-11-11", kind:"pre", title:"Wangaratta staging night", short:"Wangaratta staging",
+    intro:"Bikes off the cars, ready to roll in the morning.",
+    start:["Painters Island Holiday Park","Painters Island Holiday Park, Pinkerton Crescent, Wangaratta VIC 3677"],
+    alerts:[{t:"Cars stay here", d:"The cars stay parked at Painters Island for the whole ride. Collect them on Sun 15 Nov."}],
+    flow:[
+      {sec:"Accommodation", stops:[{n:"Painters Island Holiday Park", tag:"Check in 3pm", loc:"Pinkerton Crescent, Wangaratta 3677"}]}
+    ]},
+  { id:"r1", date:"2026-11-12", kind:"ride", n:1, title:"Wangaratta to Beechworth", short:"Wangaratta to Beechworth",
+    km:"44 km", grade:"Easy, then intermediate", climb:"174 m to Everton, then the Beechworth climb", surface:"Sealed trail",
+    terrain:"Flat to gently uphill to Everton, then a long, steady climb on the Beechworth branch.",
+    intro:"Flat farmland first, then the climb up to Beechworth. Long but gentle on e-bikes.",
+    start:["Apex Park, Wangaratta","Apex Park, Wangaratta VIC"], finish:["Armour Motor Inn","Armour Motor Inn, 1 Camp Street, Beechworth VIC 3747"],
+    alerts:[{t:"Tricky turn near Detour Road", d:"Near the Vine Hotel, look left toward the train line."},
+            {t:"The climb starts after Everton", d:"Fuel up at Everton. The Beechworth branch is a long, steady climb."}],
+    water:"Water and toilets at Apex Park, Everton Station and Beechworth's Old Railway Station. Toilets at Bowser and Tarrawingee stations.",
+    highlights:["Old station stops at Bowser and Tarrawingee, with toilets","Pennyweight Winery just before Beechworth","Ned Kelly history at the Beechworth courthouse"],
+    flow:[
+      {ms:"Departed Wangaratta", km:0, sub:"Trail start at Apex Park"},
+      {sec:"Breakfast · Wangaratta", stops:[
+        {n:"Aroma Deli Cafe", tag:"Breakfast", d:"Popular local cafe. Hours not confirmed, so check before you go.", loc:"Wangaratta town centre"},
+        {n:"Little B Cafe", tag:"Breakfast", d:"Cosy cafe, good coffee. Monday to Saturday, 7am to 3pm.", loc:"38 Norton Street, Wangaratta", phone:"03 5791 1050"},
+        {n:"Madem Espresso", tag:"Coffee", d:"Local coffee roasters. Opens 6.30am on weekdays, so good for a takeaway before rolling.", loc:"27 Muntz Street, Wangaratta"}]},
+      {sec:"Trail stop · about 8 km", stops:[
+        {n:"Bowser rest stop", tag:"Trail", d:"Old station stop with toilets. First rest point.", loc:"About 8 km from Apex Park", at:8}]},
+      {ms:"Arrived Everton", km:28},
+      {sec:"Lunch or break · Everton", stops:[
+        {n:"Everton General Store", tag:"Cafe", d:"Country burgers and famous milkshakes. Hours not confirmed, so call ahead if you're counting on lunch.", loc:"Everton", at:28},
+        {n:"Everton Hotel", tag:"Lunch", d:"Country pub. Lunch hours not confirmed, so check before you rely on it.", loc:"Everton", at:28}]},
+      {alert:{t:"Now the climb", d:"About 17 km up to Beechworth. Steady, not steep."}},
+      {sec:"Trail stop · near Beechworth", stops:[
+        {n:"Pennyweight Winery", tag:"Winery", d:"Family-run biodynamic winery on the way into town. Cellar door 10am to 5pm.", loc:"13 Pennyweight Lane, Beechworth", at:42}]},
+      {ms:"Arrived Beechworth", km:44, sub:"Day 1 complete"},
+      {sec:"Sightseeing · Beechworth", stops:[
+        {n:"Burke Museum", tag:"Heritage", d:"One of Australia's oldest museums (1857). Gold rush history. Open daily, 10am to 4.30pm. Adults $8.", loc:"28 Loch Street, Beechworth"},
+        {n:"Historic Courthouse", tag:"Heritage", d:"Where Ned Kelly faced his committal hearing. Original dock and fittings. Kelly Trials sessions daily on the hour, 10am to 3pm.", loc:"Beechworth town centre"},
+        {n:"Lake Sambell", tag:"Nature", d:"Lake and gardens. An easy evening stroll.", loc:"Beechworth"}]},
+      {sec:"Accommodation · Beechworth", stops:[{n:"Armour Motor Inn", tag:"Check in 2pm", loc:"1 Camp Street, Beechworth 3747"}]},
+      {sec:"Dinner · Beechworth", stops:[
+        {n:"Bridge Road Brewers", booked:"", tag:"Dinner", book:true, d:"Craft beer and pizza in an old coach house. Open daily, dinner from 5pm.", loc:"50 Ford Street, Beechworth", phone:"(03) 5728 2703"},
+        {n:"The Provenance", booked:"", tag:"Dinner", book:true, d:"Hatted fine dining in a 19th century bank building. Dinner Friday to Monday only, so likely closed on Thursday 12 Nov.", loc:"86 Ford Street, Beechworth", phone:"(03) 5728 1786"}]}
+    ]},
+  { id:"r2", date:"2026-11-13", kind:"ride", n:2, title:"Beechworth to Bright", short:"Beechworth to Bright",
+    km:"72 km", grade:"Intermediate", climb:"Long descent, then Taylors Gap", surface:"Sealed trail",
+    terrain:"Downhill to Everton, a hill to Taylors Gap, then the Ovens Valley to Bright.",
+    intro:"The longest day. Downhill off the plateau, then up the valley to Bright.",
+    start:["Armour Motor Inn","Armour Motor Inn, 1 Camp Street, Beechworth VIC 3747"], finish:["Adina Lodge Bright","Adina Lodge, 1 Ashwood Avenue, Bright VIC 3741"],
+    alerts:[{t:"Battery range", d:"72 km is past your 70 km range. Charge fully overnight and go easy on boost. Myrtleford Cycle Centre may be able to shuttle you from Myrtleford to Bright."},
+            {t:"Long descent", d:"About 17 km downhill to Everton. Keep your speed in check."},
+            {t:"Taylors Gap", d:"A short, steeper pinch before the drop into Myrtleford."}],
+    water:"Water and toilets at Beechworth's Old Railway Station and Everton Station, then in Myrtleford, Porepunkah and Bright. None confirmed between Everton and Myrtleford.",
+    highlights:["The long downhill run off the Beechworth plateau","Lunch in Myrtleford","Ovens Valley farms and Mount Buffalo views toward Bright"],
+    flow:[
+      {ms:"Departed Beechworth", km:44, sub:"Day 2 start"},
+      {sec:"Breakfast · Beechworth", stops:[
+        {n:"Tiny of Beechworth", tag:"Breakfast", d:"Tiny cafe for coffee, cakes and toasties. Hours not confirmed.", loc:"14A Camp Street, Beechworth"},
+        {n:"Beechworth Provender", tag:"Breakfast", d:"Cafe and providore. Coffee and house-made snacks. Usually 9am to 4pm, and Friday is listed.", loc:"20 Camp Street, Beechworth"}]},
+      {ms:"Arrived Myrtleford", km:87, sub:"About 43 km from Beechworth"},
+      {sec:"Lunch · Myrtleford", stops:[
+        {n:"Myrtleford Bakehouse", tag:"Cafe", d:"Pies and pastries, near the trail.", loc:"52 Standish Street, Myrtleford"},
+        {n:"Reclaim Winebar & Cafe", tag:"Lunch", d:"Cafe meals and local wine. Kitchen Friday to Tuesday, 11am to 8.30pm. Known for its butter chicken.", loc:"55A Standish Street, Myrtleford", phone:"0430 093 633"}]},
+      {sec:"Afternoon stops · on to Bright", stops:[
+        {n:"Australian Pumpkin Seed Co.", tag:"Produce", d:"Taste pumpkin seeds and oil, and watch the factory through a window. Hours not confirmed, so call ahead.", loc:"5061 Great Alpine Road, Ovens", phone:"(03) 5752 1199", at:100},
+        {n:"Ringer Reef Winery", tag:"Winery", d:"Cycle-friendly winery, about 1 km from Porepunkah. Cellar door Thursday to Monday, 12pm to 5pm.", loc:"6835 Great Alpine Road, Porepunkah", at:108},
+        {n:"Rail Trail Cafe", tag:"Cafe", d:"Generous, Mexican-inspired menu. Closed Thursday and Friday, so it won't be open today.", loc:"2 Service Street, Porepunkah", at:110}]},
+      {ms:"Arrived Bright", km:116, sub:"Day 2 complete"},
+      {sec:"Accommodation · Bright", stops:[{n:"Adina Lodge Bright", tag:"Check in 2pm", loc:"1 Ashwood Avenue, Bright 3741"}]},
+      {sec:"Dinner · Bright", stops:[
+        {n:"Elm Dining", booked:"", tag:"Dinner", book:true, d:"Fine dining in an 1862 cottage. Small venue, books out. Reopens 30 Oct after a break.", loc:"98 Gavan Street, Bright", phone:"03 4705 8000"},
+        {n:"Bright Brewery", tag:"Dinner", d:"Relaxed brewpub with a tasting paddle. Dinner from 5pm, walk-ins welcome.", loc:"121 Great Alpine Road, Bright", phone:"(03) 5755 1301"}]}
+    ]},
+  { id:"r3", date:"2026-11-14", kind:"ride", n:3, title:"Bright to Myrtleford", short:"Bright to Myrtleford",
+    km:"About 30 km", grade:"Intermediate", climb:"Gentle valley grade", surface:"Sealed trail",
+    terrain:"Mostly flat with gentle undulations down the valley. Optional 11 km return ride to Wandi first.",
+    intro:"An easy day down the valley. Lunch to be decided.",
+    start:["Adina Lodge Bright","Adina Lodge, 1 Ashwood Avenue, Bright VIC 3741"], finish:["Myrtleford Hotel","Myrtleford Hotel, 67 Standish Street, Myrtleford VIC 3737"],
+    alerts:[{t:"Lunch to be decided", d:"Gapsted Estate changed owners in October 2026 and its restaurant won't reopen. If you go, it's about 6 km past Myrtleford, so about 12 km extra there and back. Call (03) 5751 9101 first."}],
+    water:"Water and toilets in Bright, Porepunkah and Myrtleford.",
+    highlights:["Optional morning ride to Wandiligong, a heritage gold and orchard village","An easy, shorter day to rest the legs","Myrtleford's Mosaic Trail along the Ovens River"],
+    flow:[
+      {ms:"Departed Bright", km:116, sub:"Day 3 start"},
+      {sec:"Breakfast · Bright", stops:[
+        {n:"Wild Thyme", tag:"Breakfast", d:"Big breakfasts. Open daily, 8am to 2pm.", loc:"3A Ireland Street, Bright"},
+        {n:"Gum Tree Pies", tag:"Cafe", d:"Gourmet pies with unusual flavours. Hours not confirmed.", loc:"2a Anderson Street, Bright"}]},
+      {sec:"Optional ride · Wandiligong", stops:[
+        {n:"Wandiligong (Wandi)", tag:"Heritage", d:"Quiet heritage gold and orchard village. A gentle 5.5 km each way along Morses Creek, so 11 km return.", loc:"5.5 km from Bright"}]},
+      {sec:"Lunch · to be decided", stops:[
+        {n:"Reclaim Winebar & Cafe", tag:"Lunch", d:"Cafe meals and local wine in Myrtleford. Kitchen opens 11am.", loc:"55A Standish Street, Myrtleford", phone:"0430 093 633"},
+        {n:"Gapsted Estate Winery", tag:"Maybe", d:"About 6 km past Myrtleford. New owners from October 2026 and the old restaurant won't reopen, but casual food on the deck is planned. Cellar door listed Thursday to Monday, 10am to 4pm. Call first.", loc:"3897 Great Alpine Road, Gapsted", phone:"(03) 5751 9101"}]},
+      {ms:"Arrived Myrtleford", km:145, sub:"Day 3 complete"},
+      {sec:"Afternoon · Myrtleford", stops:[
+        {n:"Myrtleford Mosaic Trail", tag:"Nature", d:"Sealed loop along the Ovens River with hidden mosaics. Can be started in town.", loc:"Rotary Park to Apex Park, Myrtleford"},
+        {n:"Nimmo Bridge swimming area", tag:"Nature", d:"Local swimming spot on the river. Not confirmed as part of the Mosaic Trail.", loc:"Myrtleford"}]},
+      {sec:"Accommodation · Myrtleford", stops:[{n:"Myrtleford Hotel", tag:"Check in 1pm", loc:"67 Standish Street, Myrtleford 3737"}]},
+      {sec:"Dinner · Myrtleford", stops:[
+        {n:"Myrtleford Hotel", tag:"Dinner", d:"Country pub downstairs. Dinner Wednesday to Sunday from 5.30pm.", loc:"67 Standish Street, Myrtleford", phone:"0497 534 278"}]}
+    ]},
+  { id:"r4", date:"2026-11-15", kind:"ride", n:4, title:"Myrtleford to Wangaratta", short:"Myrtleford to Wangaratta",
+    km:"65 km", grade:"Intermediate, then easy", climb:"Taylors Gap, then mostly downhill and flat", surface:"Sealed trail and quiet country roads",
+    terrain:"Uphill to Taylors Gap, down to Everton, then flat via Milawa and Oxley.",
+    intro:"The home run, with a cheese and wine stop at Milawa.",
+    start:["Myrtleford Hotel","Myrtleford Hotel, 67 Standish Street, Myrtleford VIC 3737"], finish:["Painters Island Holiday Park","Painters Island Holiday Park, Pinkerton Crescent, Wangaratta VIC 3677"],
+    alerts:[{t:"Climb out of Myrtleford", d:"The trail climbs to Taylors Gap first thing. Steady, with a pinch at the top."},
+            {t:"Country roads to Milawa", d:"Part of the Everton to Milawa leg uses quiet roads shared with cars. Ride single file."},
+            {t:"Battery", d:"65 km is close to your range. Charge fully the night before."}],
+    water:"Water and toilets in Myrtleford, at Everton Station and at Apex Park in Wangaratta. Milawa has shops and cafes, but no public toilets confirmed.",
+    highlights:["Downhill from Taylors Gap to Everton","Milawa Cheese Company and Brown Brothers","Rolling back into Wangaratta where it all started"],
+    flow:[
+      {ms:"Departed Myrtleford", km:145, sub:"Day 4 start"},
+      {sec:"Breakfast · Myrtleford", stops:[
+        {n:"Myrtleford Bakehouse", tag:"Breakfast", d:"Opens early (5.30am listed). Easy and practical.", loc:"52 Standish Street, Myrtleford"}]},
+      {sec:"Trail stop · Everton", stops:[
+        {n:"Everton General Store", tag:"Cafe", d:"Last chance for the milkshakes.", loc:"Everton, about 28 km from Myrtleford", at:173}]},
+      {ms:"Arrived Milawa", km:191},
+      {sec:"Lunch · Milawa", stops:[
+        {n:"Milawa Cheese Company", tag:"Produce", d:"Award-winning cheeses, tastings and takeaway. Open daily, 9am to 5pm.", loc:"17 Factory Lane, Milawa", phone:"03 5727 3589"},
+        {n:"Brown Brothers", booked:"", tag:"Lunch", book:true, d:"Cellar door tastings 11am to 4pm daily. Restaurant lunch Thursday to Monday, 12pm to 3.30pm, so book for Sunday.", loc:"244 Milawa-Bobinawarrah Road, Milawa", phone:"03 5720 5500"}]},
+      {ms:"Arrived Wangaratta", km:210, sub:"Ride complete"},
+      {sec:"Finish · Wangaratta", stops:[
+        {n:"Painters Island Holiday Park", tag:"Check in 3pm", d:"The cars are here. Time to reunite.", loc:"Pinkerton Crescent, Wangaratta 3677"},
+        {n:"Cafe the PreVue", tag:"Coffee", d:"Good spot for a debrief. Open daily, 8am to 4pm.", loc:"66-68 Faithfull Street, Wangaratta", phone:"03 5721 2092"},
+        {n:"Muddy Waters", tag:"Cafe", d:"Homemade food and a lolly bar. Listed as closed on Sundays, so likely shut today.", loc:"71 Reid Street, Wangaratta"}]}
+    ]},
+  { id:"post1", date:"2026-11-16", kind:"post", title:"Bright, post-trip", short:"Bright post-trip",
+    intro:"A few easy days back in Bright.",
+    start:["Goldfield Holiday Units","55 Gavan Street, Bright VIC 3741"],
+    alerts:[{t:"Who's staying", d:"One couple confirmed at Goldfield Holiday Units. Others to be confirmed."}],
+    flow:[
+      {sec:"Accommodation", stops:[{n:"Goldfield Holiday Units", tag:"Check in 3pm", loc:"55 Gavan Street, Bright 3741"}]}
+    ]},
+  { id:"post2", date:"2026-11-18", kind:"post", title:"Checkout, Goldfield Bright", short:"Checkout",
+    intro:"Pack up and head home.",
+    start:["Goldfield Holiday Units","55 Gavan Street, Bright VIC 3741"],
+    flow:[
+      {sec:"Accommodation", stops:[{n:"Goldfield Holiday Units", tag:"Check out 11am", loc:"55 Gavan Street, Bright 3741"}]}
+    ]}
+];
+
+// Draft only: what still needs checking before the guide goes out.
+const CHECKS = [
+  ["Day 2 may be longer", "Official pages give Beechworth to Everton 17 km and Bright to Myrtleford 31 km. With Everton to Myrtleford at about 28 km, Day 2 comes to about 76 km, not 72."],
+  ["Everton to Myrtleford", "About 28 km, but I couldn't find it on an official page."],
+  ["Elevation", "Only Wangaratta to Everton (174 m) is published. Other climbs are described, not measured."],
+  ["Venues", "Everything was rechecked on 27 and 28 Oct. Still unconfirmed: hours for Aroma Deli, Tiny, Gum Tree Pies, the Pumpkin Seed Co. and both Everton stops."],
+  ["Day 3 lunch", "To be decided. Gapsted Estate was sold in Oct 2026 and its restaurant won't reopen, so it's no longer a milestone. Day 3 is now about 30 km (Bright to Myrtleford is 31 km on the official page), plus about 12 km if they ride out to Gapsted."],
+  ["Milawa lunch", "Milawa Kitchen has closed, so Brown Brothers is now the sit-down lunch on Sun 15 Nov. Worth booking."],
+  ["Sunday in Wangaratta", "Muddy Waters is listed as closed on Sundays. Cafe the PreVue is open daily, 8am to 4pm."],
+  ["Rail Trail Cafe", "Closed Thursday and Friday, so it won't be open on Day 2. Left in for reference."],
+  ["Accommodation numbers", "Armour Motor Inn and Adina Lodge are from their own websites. Myrtleford Hotel's number is from its OpenTable listing and may be the restaurant line. Driftwood is an Airbnb with no public number."],
+  ["Dinner on Thu 12 Nov", "The Provenance lists dinner Friday to Monday only, so Bridge Road Brewers is the likely pick."],
+  ["Lunch in Myrtleford", "The Butter Factory closed and moved to Moyhu as King Valley Dairy, so it's been taken out. Myrtleford Bakehouse and Reclaim Winebar & Cafe are listed instead."],
+  ["Bike shops", "West End Cycles is from a directory listing, not an official page. Myrtleford Cycle Centre's shuttle is from the old guide and not confirmed."]
+];
+/* ===== End of trip details ===== */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-");
+const dateOf = d => new Date(d.date+"T00:00:00");
+const fmt = (d,o) => dateOf(d).toLocaleDateString("en-AU",o);
+const shortDate = d => fmt(d,{weekday:"short",day:"numeric",month:"short"});
+const todayISO = (()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")})();
+const todayIdx = DAYS.findIndex(d=>d.date===todayISO);
+const before = todayISO < DAYS[0].date, after = todayISO > DAYS[DAYS.length-1].date;
+const focusIdx = todayIdx>=0 ? todayIdx : (after ? DAYS.length-1 : (before ? 0 : Math.max(0,DAYS.findIndex(d=>d.date>todayISO))));
+
+// Milestones get a global number in trip order
+const MS = [];
+DAYS.forEach(d=>d.flow.forEach(f=>{ if(f.ms){ f.idx=MS.length; MS.push({...f,day:d.id}) } }));
+const RIDE_DAYS = DAYS.filter(d=>d.kind==="ride");
+
+/* State: one object on this phone */
+const KEY = "escape_v1";
+try{ ["m2m_v1","m2m_v2","m2m_v3","m2m_v4"].forEach(k=>localStorage.removeItem(k)) }catch(e){}
+let S = (()=>{ try{ return JSON.parse(localStorage.getItem(KEY))||{} }catch(e){ return {} } })();
+const save = () => { try{ localStorage.setItem(KEY,JSON.stringify(S)) }catch(e){} };
+const sget = (k,def) => (k in S ? S[k] : def);
+const sset = (k,v) => { if(v===undefined||v===false||v===null) delete S[k]; else S[k]=v; save() };
+
+let ui = { view: sget("view","trip")==="day"?"day":"trip", day: focusIdx, editSec:null, prompt:null, listEdit:null, resetAsk:false };
+
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,2000) }
+
+/* Progress: furthest ticked milestone, nudged by ticked stops further along */
+function progress(){
+  let km=0, done=0;
+  MS.forEach(m=>{ if(S["ms_"+m.idx]){ done++; km=Math.max(km,m.km) } });
+  if(done) DAYS.forEach(d=>d.flow.forEach(f=>f.sec&&f.stops.forEach(s=>{ if(s.at!=null && S[stopId(d,f,s)]) km=Math.max(km,s.at) })));
+  return {km, done, pct:Math.round(km/TOTAL_KM*100)};
+}
+const stopId = (d,f,s) => "s_"+d.id+"_"+slug(f.sec)+"_"+slug(s.n);
+const secId = (d,f) => "sec_"+d.id+"_"+slug(f.sec);
+function rideDone(d){ const ms=MS.filter(m=>m.day===d.id); return ms.length && ms.every(m=>S["ms_"+m.idx]) }
+
+function renderSpine(){
+  const p=progress();
+  const nextIdx = p.done ? SPINE.findIndex(n=>n.km>p.km) : -1;
+  $("#spine").innerHTML = `<div class="spine-top"><span>Trail progress</span><b>${p.pct}% · ${p.km} km</b></div>
+    <div class="nodes"><span class="track"></span><span class="fill" id="fill"></span>
+    ${SPINE.map((n,i)=>`<button class="node ${p.done&&n.km<=p.km?"done":""} ${i===nextIdx?"next":""}" data-day="${n.day}" aria-label="${esc(n.label)}, ${n.km} km"><span class="km">${n.km}</span><i></i><span>${esc(n.label)}</span></button>`).join("")}</div>`;
+  // Fill runs between dot centres, spaced evenly, interpolated by km
+  let pos=0;
+  if(p.done){ for(let i=0;i<SPINE.length-1;i++){ const a=SPINE[i].km,b=SPINE[i+1].km; if(p.km>=b) pos=i+1; else if(p.km>a){ pos=i+(p.km-a)/(b-a); break } else break } }
+  $("#fill").style.width = `calc((100% - 28px) * ${pos/(SPINE.length-1)})`;
+  $("#spine").querySelectorAll(".node").forEach(b=>b.onclick=()=>{ ui.view="day"; ui.day=DAYS.findIndex(d=>d.id===b.dataset.day); render(); window.scrollTo(0,$("#tabs").offsetTop) });
+}
+
+function statusFor(i){
+  const d=DAYS[i];
+  if(d.date<todayISO) return ["done","Done"];
+  if(d.date===todayISO) return ["today","Today"];
+  return ["", fmt(d,{weekday:"short"})];
+}
+
+function renderTabs(){
+  const t=$("#tabs"); t.hidden = ui.view!=="day";
+  t.innerHTML = DAYS.map((d,i)=>`<button class="tab ${d.kind==="ride"?"ride":""}" role="tab" id="tab-${d.id}" aria-selected="${i===ui.day}" data-i="${i}" aria-label="${esc(shortDate(d))}, ${esc(d.short)}">${fmt(d,{weekday:"short"})}<b>${dateOf(d).getDate()}</b>${(S["note_"+d.id]||"").trim()?'<span class="dot"></span>':""}</button>`).join("");
+  t.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ ui.day=+b.dataset.i; ui.editSec=null; ui.prompt=null; ui.listEdit=null; render(); window.scrollTo(0,$("#tabs").offsetTop) });
+}
+
+function summary(){
+  const p=progress(), L=[`${TRIP_NAME}`, `Progress: ${p.km} of ${TOTAL_KM} km, ${p.done} of ${MS.length} milestones`, ""];
+  DAYS.forEach(d=>{
+    const lines=[];
+    d.flow.forEach(f=>{
+      if(f.ms && S["ms_"+f.idx]) lines.push(`  ✓ ${f.ms} (${S["ms_time_"+f.idx]||""})`);
+      if(f.sec) f.stops.forEach(s=>{ if(S[stopId(d,f,s)]) lines.push(`  ✓ ${s.n}`) });
+    });
+    const note=(S["note_"+d.id]||"").trim();
+    if(note) lines.push("  Notes: "+note.replace(/\n/g,"\n  "));
+    if(lines.length) L.push(`${shortDate(d)} · ${d.title}`, ...lines, "");
+  });
+  return L.join("\n");
+}
+async function copyText(txt){ try{ await navigator.clipboard.writeText(txt); return true }catch(e){ return false } }
+
+const nextDay = i => DAYS.find(d=>d.date>DAYS[i].date);
+function chargeAlert(i){
+  const n=nextDay(i);
+  return n && n.kind==="ride" ? `<div class="alert charge"><b>Charge batteries tonight</b><span>Tomorrow is ${esc(n.title)}, ${n.km}.</span></div>` : "";
+}
+function contactRow(c){ return `<div class="contact"><div><b>${esc(c.name)}</b><small>${esc(c.detail)}${c.num?"":" · number to add"}</small>${c.num?`<span class="num">${esc(c.num)}</span>`:""}</div>${c.num?`<button class="copy" data-n="${esc(c.num)}">Copy</button>`:""}</div>` }
+function bookingsHTML(){
+  const rows=[];
+  DAYS.forEach(d=>d.flow.forEach(f=>f.sec&&f.stops.forEach(s=>{ if(s.book) rows.push({d,s,meal:f.sec.split(" · ")[0]}) })));
+  return fold("bookings","Bookings",`${rows.map(({d,s,meal})=>`<div class="contact"><div><b>${esc(s.n)}</b><small>${shortDate(d)} · ${esc(meal)}</small><span class="bk ${s.booked?"yes":""}">${s.booked?"Booked: "+esc(s.booked):"Not booked yet"}</span>${s.phone?`<span class="num">${esc(s.phone)}</span>`:""}</div>${s.phone?`<button class="copy" data-n="${esc(s.phone)}">Copy</button>`:""}</div>`).join("")}
+    <p class="notes">Pick one of each pair. The other can be hidden in that day's list.</p>`);
+}
+
+// A collapsible card on the Trip page. Closed until the viewer opens it; this phone remembers.
+const fold = (id,title,body,force,defOpen=false) => `<section class="card"><details class="pack" data-fold="${id}" ${sget("fold_"+id,defOpen)||force?"open":""}><summary><h3>${title}</h3></summary><div class="pack-body">${body}</div></details></section>`;
+
+function tripView(){
+  const p=progress(), f=DAYS[focusIdx];
+  let label, lead="";
+  if(before){ const n=Math.round((dateOf(DAYS[0])-new Date(todayISO+"T00:00:00"))/86400000); label=`Starts in ${n} day${n===1?"":"s"}`; lead="First up: " }
+  else if(after) label="Trip complete";
+  else if(todayIdx>=0) label=`Today · ${shortDate(f)}`;
+  else { label=`Next · ${shortDate(f)}`; }
+  const sur = SURPRISES[todayISO];
+  return `
+  ${sur?`<section class="card surprise"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p></section>`:""}
+  ${fold("progress",`Your progress · ${p.km} km`,`    <div class="tally">
+      <div class="stat"><b>${p.done}/${MS.length}</b><span>milestones</span></div>
+      <div class="stat"><b>${p.km}</b><span>km done</span></div>
+      <div class="stat"><b>${RIDE_DAYS.filter(rideDone).length}/${RIDE_DAYS.length}</b><span>ride days</span></div>
+    </div>
+    <div class="btns"><button class="btn" id="save">Copy trip summary</button><button class="btn alt" id="show-hidden">Show all hidden</button></div>
+    ${ui.resetAsk?`<div class="prompt"><b>Clear all ticks, notes and hidden options on this phone?</b><span>Your summary is copied first, so you can paste it somewhere safe.</span><div class="btns"><button class="btn" id="reset-yes">Yes, clear it</button><button class="btn alt" id="reset-no">Keep everything</button></div></div>`
+      :`<div class="row-end"><span class="notes">Ticks and notes are saved on this phone only.</span><button class="link" id="reset">Reset</button></div>`}
+`,ui.resetAsk)}
+  ${p.km>=TOTAL_KM?`<section class="card complete"><span class="meta">Ride complete</span><h2>${TOTAL_KM} km on the Murray to Mountains</h2><p>Well ridden, all four of you.</p></section>`:""}
+  <section class="card">
+    <span class="meta">${label}</span>
+    <h2>${after?"":lead}${esc(after?TRIP_NAME:f.title)}</h2>
+    <p>${esc(after?"Every ride day is in the Days tab, with your ticks and notes.":f.intro)}</p>
+    ${todayIdx>=0?chargeAlert(todayIdx):""}
+    <div class="btns"><button class="btn" id="open-focus">Open day</button><a class="btn alt" href="${mapUrl(f.start[1])}" target="_blank" rel="noopener">${f.kind==="ride"?"Start in Maps":"Open in Maps"}</a></div>
+  </section>
+  ${fold("trip","The trip",`<div class="days">${DAYS.map((d,i)=>{const [c,l]=statusFor(i);return `
+      <button class="day-row" data-i="${i}"><span>${d.kind==="ride"?`Day ${d.n}: `:""}${esc(d.short)}<small>${shortDate(d)}${d.km?" · "+d.km:" · "+(d.kind==="pre"?"pre-trip":"post-trip")}</small></span><span class="pill ${c}">${d.kind==="ride"&&rideDone(d)?"Ridden":l}</span></button>`}).join("")}
+    </div>`,false,true)}
+  ${bookingsHTML()}
+  ${fold("accom","Accommodation",`<div>${CONTACTS.map(contactRow).join("")}</div>`)}
+  ${fold("bikes","Bike shops",`<p class="notes">For a flat tyre or a battery problem. Ring ahead, as hours vary.</p>
+    <div>${BIKE_SHOPS.map(b=>contactRow({name:b.name, detail:b.town+" · "+b.detail, num:b.num})).join("")}</div>`)}
+  ${fold("emergency","Emergency",`<span class="big-num">000</span>
+    <p>There are emergency markers every 1 km along the rail trail. Read the nearest one to the operator. The Emergency+ app shares your exact location.</p>
+    <p class="notes">Phone reception is patchy away from towns. Open this guide each morning while you have signal and it will work offline for the day.</p>`)}
+  ${fold("trail","On the trail",`<ul class="hl">
+      <li>Keep left. Ring your bell or call out before passing.</li>
+      <li>Stop and give way to cars at road crossings.</li>
+      <li>Water and toilets are in the towns and at most old station stops.</li>
+      <li>Spring is magpie swooping season, and snakes are out on warm days.</li>
+    </ul>`)}
+  <section class="card">
+    <h3>Still to check</h3>
+    ${CHECKS.map(([t,d])=>`<div class="flag"><b>${esc(t)}</b>${esc(d)}</div>`).join("")}
+  </section>
+  <p class="draft">Mock-up. Details still being checked.</p>`;
+}
+
+function stopHTML(d,f,s,editing){
+  const id=stopId(d,f,s), on=!!S[id], hid=!!S["hid_"+id];
+  if(hid && !editing) return "";
+  return `<div class="stop-row ${hid?"hid":""}">
+    <button class="stop ${on?"on":""}" data-id="${id}" aria-pressed="${on}"><span class="c"></span><span>
+      <span class="nm">${esc(s.n)}</span>${s.tag?`<span class="tag">${esc(s.tag)}</span>`:""}${s.book?`<span class="tag book">${s.booked?"Booked":"Book ahead"}</span>`:""}
+      ${s.d?`<span class="ds">${esc(s.d)}</span>`:""}${s.loc?`<span class="lc">${esc(s.loc)}</span>`:""}
+    </span></button>
+    ${editing&&!on?`<button class="hide-btn ${hid?"restore":""}" data-hide="${id}">${hid?"Show":"Hide"}</button>`:""}
+  </div>${s.phone&&!hid?`<div class="phone"><span>${esc(s.phone)}</span><button class="copy" data-n="${esc(s.phone)}">Copy</button></div>`:""}`;
+}
+
+const LISTS = { pack:{title:"Packing", master:PACKING}, eod:{title:"End of day", master:END_OF_DAY} };
+function listItems(key){ const own=sget(key+"_list",null); return own || LISTS[key].master.map(g=>({name:g.name,items:g.items.slice(),note:g.note})) }
+
+function listHTML(key,d){
+  const list=listItems(key), ticks=sget(key+"_"+d.id,[]), all=list.reduce((n,g)=>n+g.items.length,0);
+  const done=list.reduce((n,g)=>n+g.items.filter(t=>ticks.includes(g.name+"|"+t)).length,0);
+  const ed=ui.listEdit&&ui.listEdit.key===key ? ui.listEdit.gi : null;
+  return `<section class="card"><details class="pack" data-list="${key}" ${sget(key+"open_"+d.id,false)||ed!==null?"open":""}>
+    <summary><h3>${LISTS[key].title}</h3><span class="meta" style="margin-left:auto">${done} of ${all}</span></summary>
+    <div class="pack-body">
+      ${list.map((g,gi)=>{const gd=g.items.filter(t=>ticks.includes(g.name+"|"+t)).length, e=ed===gi, so=sget(key+"sub_"+d.id+"_"+gi,false);return `
+      <details class="sub" data-list="${key}" data-gi="${gi}" ${so||e?"open":""}>
+        <summary><b>${esc(g.name)}</b><span class="meta">${gd} of ${g.items.length}</span></summary>
+        ${g.note?`<p class="notes" style="margin-top:6px">${esc(g.note)}</p>`:""}
+        ${e?`<div class="rename"><label for="ren-${key}-${gi}">Section name</label><input id="ren-${key}-${gi}" type="text" value="${esc(g.name)}" data-ren="${key}|${gi}" autocomplete="off"></div>
+          <div>${g.items.map((t,j)=>`<div class="edit-row"><input type="text" value="${esc(t)}" data-ied="${key}|${gi}|${j}" aria-label="Edit item" autocomplete="off"><button class="hide-btn" data-rm="${key}|${gi}|${j}">Remove</button></div>`).join("")}</div>
+          <form class="add" data-add="${key}|${gi}"><input id="add-${key}-${gi}" type="text" placeholder="Add to ${esc(g.name)}" aria-label="New item for ${esc(g.name)}" autocomplete="off"><button class="btn" type="submit">Add</button></form>
+          <div class="row-end"><button class="link" data-gdel="${key}|${gi}">${ui.gdel===key+"|"+gi?"Tap again to remove this section":"Remove this section"}</button><button class="btn" data-ldone="1" style="min-height:42px">Done</button></div>
+          <p class="notes">Changes apply to every day, on this phone only.</p>`
+        :`<div class="check">${g.items.map((t,j)=>{const k=g.name+"|"+t;return `<label><input type="checkbox" id="${key}-${d.id}-${gi}-${j}" data-list="${key}" data-k="${esc(k)}" ${ticks.includes(k)?"checked":""}><span>${esc(t)}</span></label>`}).join("")}</div>
+          <div class="row-end"><button class="link" data-ledit="${key}|${gi}">Edit section</button></div>`}
+      </details>`}).join("")}
+      <form class="add newsec" data-gadd="${key}"><input id="gadd-${key}" type="text" placeholder="Add a section, like Pannier 2" aria-label="New section name" autocomplete="off"><button class="btn" type="submit">Add</button></form>
+      <div class="row-end"><button class="link" data-lrestore="${key}">Go back to the original list</button><button class="link" data-luntick="${key}">Untick all</button></div>
+      <p class="notes">Ticks start fresh each day.</p>
+    </div>
+  </details></section>`;
+}
+
+function dayView(){
+  const d=DAYS[ui.day];
+  const ride=d.kind==="ride";
+  const flow=d.flow.map((f,fi)=>{
+    if(f.ms){ const on=!!S["ms_"+f.idx]; return `<button class="ms ${on?"on":""}" data-ms="${f.idx}" aria-pressed="${on}"><i></i><span><b>${esc(f.ms)}</b><small>${f.km} km${f.sub?" · "+esc(f.sub):""}${on&&S["ms_time_"+f.idx]?" · ticked at "+S["ms_time_"+f.idx]:""}</small></span></button>` }
+    if(f.alert) return `<div class="alert"><b>${esc(f.alert.t)}</b><span>${esc(f.alert.d)}</span></div>`;
+    const sid=secId(d,f), closed=!!S[sid], editing=ui.editSec===sid;
+    const hiddenCount=f.stops.filter(s=>S["hid_"+stopId(d,f,s)]).length;
+    return `<div class="sec ${closed&&!editing?"closed":""}">
+      <div class="sec-head"><span class="meta">${esc(f.sec)}</span><span class="sec-tools">
+        ${f.stops.length>1?`<button class="link" data-edit="${sid}">${editing?"Done":"Edit"}</button>`:""}
+        <button class="chev" data-col="${sid}" aria-label="${closed?"Show":"Hide"} ${esc(f.sec)}" aria-expanded="${!closed}">⌄</button></span></div>
+      <div class="stops">${f.stops.map(s=>stopHTML(d,f,s,editing)).join("")}
+        ${hiddenCount&&!editing?`<p class="notes">${hiddenCount} hidden. Tap Edit to show.</p>`:""}
+        ${ui.prompt===sid?`<div class="prompt"><span>Hide the other options in this section?</span><div class="btns"><button class="btn" data-pyes="${fi}">Yes</button><button class="btn alt" data-pno="1">Keep</button></div></div>`:""}
+      </div></div>`;
+  }).join("");
+  const anyOpen=d.flow.some(f=>f.sec&&!S[secId(d,f)]);
+  const sur = todayISO>=d.date ? SURPRISES[d.date] : null;
+  return `
+  ${sur?`<section class="card surprise"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p></section>`:""}
+  <section class="card"><details class="pack head" data-dfold="head" ${sget("dfold_head_"+d.id,true)?"open":""}>
+    <summary><span class="head-sum"><span class="meta">${ride?`Ride day ${d.n} · `:(d.kind==="pre"?"Pre-trip · ":"Post-trip · ")}${fmt(d,{weekday:"long",day:"numeric",month:"long"})}</span>
+    <h2>${esc(d.title)}</h2><span class="when-closed notes">${ride?d.km+" · ":""}Tap to show the overview</span></span></summary>
+    <div class="pack-body">
+    <p>${esc(d.intro)}</p>
+    ${ride?`<div class="stats">
+      <div class="stat"><b>${d.km}</b><span>distance</span></div>
+      <div class="stat t"><b>${esc(d.grade)}</b><span>grade</span></div>
+      <div class="stat t"><b>${esc(d.climb)}</b><span>elevation</span></div>
+      <div class="stat t"><b>${esc(d.surface)}</b><span>surface</span></div>
+    </div><p class="terrain">${esc(d.terrain)}</p>`:""}
+    ${(d.alerts||[]).map(a=>`<div class="alert"><b>${esc(a.t)}</b><span>${esc(a.d)}</span></div>`).join("")}
+    ${chargeAlert(ui.day)}
+    ${d.water?`<div class="water"><b>Toilets and water</b><span>${esc(d.water)}</span></div>`:""}
+    ${d.highlights?`<div class="look"><span class="meta">Look out for</span><ul class="hl">${d.highlights.map(h=>`<li>${esc(h)}</li>`).join("")}</ul></div>`:""}
+    <div class="btns">
+      <a class="btn${d.finish?"":" wide"}" href="${mapUrl(d.start[1])}" target="_blank" rel="noopener">${d.finish?"Start: ":""}${esc(d.start[0])}</a>
+      ${d.finish?`<a class="btn" href="${mapUrl(d.finish[1])}" target="_blank" rel="noopener">Finish: ${esc(d.finish[0])}</a>`:""}
+      ${d.extraMap?`<a class="btn alt wide" href="${mapUrl(d.extraMap[1])}" target="_blank" rel="noopener">${esc(d.extraMap[0])}</a>`:""}
+    </div>
+    </div></details>
+  </section>
+  ${listHTML("pack",d)}
+  ${nextDay(ui.day)&&nextDay(ui.day).kind==="ride"?listHTML("eod",d):""}
+  <div class="row-end"><span class="meta">${ride?"The day, stop by stop":"Details"}</span><button class="link" id="toggle-all">${anyOpen?"Collapse all":"Expand all"}</button></div>
+  <div class="flow">${flow}</div>
+  <section class="card">
+    <label for="note-${d.id}"><h3>Notes</h3></label>
+    <textarea id="note-${d.id}" placeholder="To-do, reminders, journal">${esc(S["note_"+d.id]||"")}</textarea>
+    <span class="saved" id="saved">Saved</span>
+  </section>`;
+}
+
+function keep(fn){ const y=window.scrollY; fn(); render(); window.scrollTo(0,y) }
+
+function render(){
+  sset("view",ui.view);
+  document.querySelectorAll(".nav button").forEach(b=>{ if(b.dataset.view===ui.view) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current") });
+  renderSpine(); renderTabs();
+  const v=$("#view");
+  v.innerHTML = ui.view==="trip" ? tripView() : dayView();
+  v.querySelectorAll(".copy").forEach(b=>b.onclick=async()=>{ b.textContent = await copyText(b.dataset.n) ? "Copied" : b.dataset.n });
+
+  if(ui.view==="trip"){
+    v.querySelectorAll("details[data-fold]").forEach(x=>x.ontoggle=()=>sset("fold_"+x.dataset.fold,x.open));
+    $("#open-focus").onclick=()=>{ ui.view="day"; ui.day=focusIdx; render(); window.scrollTo(0,0) };
+    v.querySelectorAll(".day-row").forEach(r=>r.onclick=()=>{ ui.view="day"; ui.day=+r.dataset.i; render(); window.scrollTo(0,0) });
+    $("#save").onclick=async()=>{ toast(await copyText(summary()) ? "Summary copied" : "Couldn't copy on this phone") };
+    $("#show-hidden").onclick=()=>keep(()=>{ Object.keys(S).filter(k=>k.startsWith("hid_")).forEach(k=>delete S[k]); save(); toast("Hidden options are back") });
+    if($("#reset")) $("#reset").onclick=()=>keep(()=>ui.resetAsk=true);
+    if($("#reset-no")) $("#reset-no").onclick=()=>keep(()=>ui.resetAsk=false);
+    if($("#reset-yes")) $("#reset-yes").onclick=async()=>{ await copyText(summary()); const view=S.view; S={view}; save(); ui.resetAsk=false; render(); toast("Cleared. Summary copied first") };
+    return;
+  }
+
+  const d=DAYS[ui.day];
+  v.querySelectorAll(".ms").forEach(b=>b.onclick=()=>keep(()=>{
+    const i=b.dataset.ms;
+    if(S["ms_"+i]){ delete S["ms_"+i]; delete S["ms_time_"+i] }
+    else { S["ms_"+i]=true; S["ms_time_"+i]=new Date().toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"}) }
+    save(); if(navigator.vibrate) navigator.vibrate(40);
+  }));
+  v.querySelectorAll(".stop").forEach(b=>b.onclick=()=>keep(()=>{
+    const id=b.dataset.id; sset(id,!S[id]);
+    ui.prompt=null;
+    if(S[id] && ui.editSec===null){
+      const f=d.flow.find(f=>f.sec&&f.stops.some(s=>stopId(d,f,s)===id));
+      if(f.stops.some(s=>{const o=stopId(d,f,s);return o!==id&&!S[o]&&!S["hid_"+o]})) ui.prompt=secId(d,f);
+    }
+  }));
+  v.querySelectorAll("[data-pyes]").forEach(b=>b.onclick=()=>keep(()=>{ const f=d.flow[+b.dataset.pyes]; f.stops.forEach(s=>{const o=stopId(d,f,s); if(!S[o]) S["hid_"+o]=true}); save(); ui.prompt=null }));
+  v.querySelectorAll("[data-pno]").forEach(b=>b.onclick=()=>keep(()=>ui.prompt=null));
+  v.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>keep(()=>{ ui.prompt=null; ui.editSec = ui.editSec===b.dataset.edit?null:b.dataset.edit }));
+  v.querySelectorAll("[data-hide]").forEach(b=>b.onclick=()=>keep(()=>sset("hid_"+b.dataset.hide,!S["hid_"+b.dataset.hide])));
+  v.querySelectorAll("[data-col]").forEach(b=>b.onclick=()=>keep(()=>sset(b.dataset.col,!S[b.dataset.col])));
+  $("#toggle-all").onclick=()=>keep(()=>{ const anyOpen=d.flow.some(f=>f.sec&&!S[secId(d,f)]); d.flow.forEach(f=>{ if(f.sec){ if(anyOpen) S[secId(d,f)]=true; else delete S[secId(d,f)] } }); save() });
+
+  // Packing
+  v.querySelectorAll("details[data-dfold]").forEach(x=>x.ontoggle=()=>sset("dfold_"+x.dataset.dfold+"_"+d.id,x.open?undefined:false));
+  v.querySelectorAll("details.pack[data-list]").forEach(x=>x.ontoggle=()=>sset(x.dataset.list+"open_"+d.id,x.open));
+  v.querySelectorAll("details.sub").forEach(x=>x.ontoggle=()=>sset(x.dataset.list+"sub_"+d.id+"_"+x.dataset.gi,x.open));
+  v.querySelectorAll(".check input").forEach(x=>x.onchange=()=>keep(()=>{ const k=x.dataset.list+"_"+d.id, t=sget(k,[]).filter(i=>i!==x.dataset.k); if(x.checked) t.push(x.dataset.k); sset(k,t.length?t:undefined) }));
+  v.querySelectorAll("[data-ledit]").forEach(b=>b.onclick=()=>keep(()=>{ const [key,gi]=b.dataset.ledit.split("|"); ui.listEdit={key,gi:+gi} }));
+  v.querySelectorAll("[data-ldone]").forEach(b=>b.onclick=()=>keep(()=>{ ui.listEdit=null; ui.gdel=null }));
+  // Move ticks on every day when a section or item is renamed
+  const moveTicks=(key,fn)=>DAYS.forEach(x=>{ const t=sget(key+"_"+x.id,null); if(t) sset(key+"_"+x.id,t.map(fn)) });
+  v.querySelectorAll("[data-ren]").forEach(x=>x.onchange=()=>keep(()=>{ const [key,gi]=x.dataset.ren.split("|"), l=listItems(key), g=l[+gi], n=x.value.trim();
+    if(!n||n===g.name||l.some(o=>o.name===n)) return; const o=g.name; g.name=n; sset(key+"_list",l); moveTicks(key,k=>k.startsWith(o+"|")?n+k.slice(o.length):k) }));
+  v.querySelectorAll("[data-ied]").forEach(x=>x.onchange=()=>keep(()=>{ const [key,gi,j]=x.dataset.ied.split("|"), l=listItems(key), g=l[+gi], n=x.value.trim(), o=g.items[+j];
+    if(!n||n===o||g.items.includes(n)) return; g.items[+j]=n; sset(key+"_list",l); moveTicks(key,k=>k===g.name+"|"+o?g.name+"|"+n:k) }));
+  v.querySelectorAll("[data-gdel]").forEach(b=>b.onclick=()=>keep(()=>{ const id=b.dataset.gdel; if(ui.gdel!==id){ ui.gdel=id; return }
+    const [key,gi]=id.split("|"), l=listItems(key); l.splice(+gi,1); sset(key+"_list",l); ui.gdel=null; ui.listEdit=null; toast("Section removed") }));
+  v.querySelectorAll("form[data-gadd]").forEach(f=>f.onsubmit=e=>{ e.preventDefault(); const key=f.dataset.gadd, n=f.querySelector("input").value.trim(); if(!n) return;
+    keep(()=>{ const l=listItems(key); if(l.some(o=>o.name===n)){ toast("There's already a section called that"); return } l.push({name:n,items:[]}); sset(key+"_list",l); ui.listEdit={key,gi:l.length-1}; sset(key+"sub_"+d.id+"_"+(l.length-1),true) }); const a=$("#add-"+key+"-"+(listItems(key).length-1)); if(a) a.focus() });
+  v.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>keep(()=>{ const [key,gi,j]=b.dataset.rm.split("|"); const l=listItems(key); l[+gi].items.splice(+j,1); sset(key+"_list",l) }));
+  v.querySelectorAll("form[data-add]").forEach(f=>f.onsubmit=e=>{ e.preventDefault(); const [key,gi]=f.dataset.add.split("|"), inp=f.querySelector("input"), t=inp.value.trim(); if(!t) return;
+    keep(()=>{ const l=listItems(key); if(!l[+gi].items.includes(t)) l[+gi].items.push(t); sset(key+"_list",l) }); const n=$("#add-"+key+"-"+gi); if(n) n.focus() });
+  v.querySelectorAll("[data-lrestore]").forEach(b=>b.onclick=()=>keep(()=>{ delete S[b.dataset.lrestore+"_list"]; save(); ui.listEdit=null; toast("Back to the original list") }));
+  v.querySelectorAll("[data-luntick]").forEach(b=>b.onclick=()=>keep(()=>sset(b.dataset.luntick+"_"+d.id,undefined)));
+
+  // Notes autosave
+  const ta=$("#note-"+d.id);
+  ta.oninput=()=>{ clearTimeout(ta.t); ta.t=setTimeout(()=>{ sset("note_"+d.id,ta.value.trim()?ta.value:undefined); const s=$("#saved"); s.classList.add("show"); setTimeout(()=>s.classList.remove("show"),1200); renderTabs() },600) };
+
+  const tab=$("#tab-"+d.id); if(tab) tab.scrollIntoView({inline:"center",block:"nearest"});
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{ ui.view=b.dataset.view; ui.resetAsk=false; render(); window.scrollTo(0,0) });
+render();
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+
+</body></html>
