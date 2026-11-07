@@ -214,7 +214,6 @@ textarea:focus{outline:none;border-color:var(--sea)}
 .wpop .q,.wq .q{font-family:var(--display);font-style:italic;font-weight:500}
 .wpop .q{font-size:21px;line-height:1.35;margin:0}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
-.wq-head{font-family:var(--display);font-weight:650;font-size:21px;line-height:1.2;margin:0;color:var(--sea)}
 .wq{display:grid;gap:2px;padding:10px 0;border-top:1px solid var(--line)}
 .wq .q{font-size:17px;line-height:1.4}
 .finished{display:grid;gap:2px;justify-items:center;background:var(--sun);color:var(--on-sun);border:0;border-radius:14px;padding:14px;font:700 20px var(--body);cursor:pointer;width:100%}
@@ -301,13 +300,12 @@ const SURPRISES = {
 };
 
 // Words of Questionable Wisdom. Each pops up from its start time until it's noted, one at a time, in this order.
-const WISDOM_HEADLINE = "Four retirees, four electric bikes, four days on the Murray to Mountains Rail Trail. What could possibly go wrong?";
 const WISDOM = [
-  {date:"2026-11-11", at:"16:00", title:"Setting Expectations", text:"Four retirees, four electric bikes, and several decades of questionable decision-making experience. What could possibly go wrong?"},
+  {date:"2026-11-11", at:"16:00", title:"Setting Expectations", text:"Four retirees, four electric bikes, four days on the Murray to Mountains Rail Trail. What could possibly go wrong?"},
   {date:"2026-11-12", at:"07:00", title:"The Briefing", text:"The route has been planned, the batteries are charged, and the confidence is wildly disproportionate to the actual cycling ability. Let's go."},
   {date:"2026-11-13", at:"07:00", title:"Battery Management", text:"Conserve your battery. You've only got so much power left, and we're not just talking about the bikes."},
-  {date:"2026-11-13", at:"13:30", title:"The Athlete's Mindset", text:"Okay, you can call yourselves athletes now. The fact that your bikes have motors and your knees have opinions is entirely irrelevant."},
   {date:"2026-11-14", at:"07:00", title:"Tour de Retirement", text:"Day three of the Tour de Retirement. Less Lycra (thankfully), less effort, considerably more interest in where lunch is."},
+  {date:"2026-11-15", at:"07:00", title:"The Athlete's Mindset", text:"Okay, you can call yourselves athletes now. The fact that your bikes have motors and your knees have opinions is entirely irrelevant."},
 ];
 // The Grand Finale plays from the Finished? button on the last ride day
 const FINALE = {title:"The Grand Finale", text:"Four days, four riders, and not a single call to emergency services. We're calling that an outstanding success.", button:"Bloody legends!<br>Go have that drink."};
@@ -837,7 +835,7 @@ function wisdomHTML(){
   if(S.finale) got.push({w:{text:FINALE.text},s:S.finale});
   if(!got.length) return "";
   got.sort((a,b)=>b.s.ts-a.s.ts);
-  return fold("wisdom","Words of Questionable Wisdom",`<p class="wq-head">${esc(WISDOM_HEADLINE)}</p>
+  return fold("wisdom","Words of Questionable Wisdom",`
     ${got.map(x=>`<div class="wq"><span class="meta">${esc(x.s.t)}</span><span class="q">${esc(x.w.text)}</span></div>`).join("")}`,false,true);
 }
 function showPop(title,text,btn,done){
