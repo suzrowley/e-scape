@@ -671,7 +671,7 @@ const WELCOME_BODY = `<p>Hi Shaz, Tony, Pat and Jen 👋</p>
     <p>Each day has a notes box for the good bits, the funny bits and the stories that might get better with every retelling. On the last day, you can copy them all to keep.</p>
     <h3>Open me each morning</h3>
     <p>Open me while you've got signal, and I'll keep working all day without it. Your ticks and notes are saved on this phone only.</p>
-    <p class="welcome-end">Charge the batteries, pack your sense of humour, and I'll see you on the road.</p>
+    <p class="welcome-end">Charge the batteries, get ready for some fun, and I'll see you on the road.</p>
     <p class="sign">Sparky ✨</p>`;
 const WELCOME_LATER = `<p class="notes welcome-later">If you need me again, from tomorrow you'll find this welcome at the bottom of the Trip page.</p>`;
 function welcomeFresh(){ const f=sget("welcome_first",null); if(!f){ S.welcome_first=todayISO; save(); return true } return f===todayISO }
