@@ -100,6 +100,11 @@ ul.hl{margin:0;padding-left:20px;display:grid;gap:6px}
 
 /* Day timeline */
 .flow{display:grid;gap:12px}
+.welcome{border:2px solid var(--sun)}
+.welcome h2{margin-bottom:8px}
+.welcome h3,.welcome-in h3{margin:14px 0 4px;font-size:17px}
+.welcome p,.welcome-in p{margin:6px 0}
+.ms-demo{display:grid;gap:8px;margin:10px 0;pointer-events:none}
 .ms{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:2px dashed var(--sea);border-radius:14px;padding:12px 14px;color:inherit;font:inherit;cursor:pointer}
 .ms i{width:24px;height:24px;border-radius:50%;border:3px solid var(--sea);flex:0 0 auto;display:grid;place-items:center}
 .ms.on{border-style:solid;background:color-mix(in srgb,var(--sea) 10%,var(--card))}
@@ -626,6 +631,27 @@ function bookingsHTML(){
 
 // A collapsible card on the Trip page. Closed until the viewer opens it; this phone remembers.
 const fold = (id,title,body,force,defOpen=false) => `<section class="card"><details class="pack" data-fold="${id}" ${sget("fold_"+id,defOpen)||force?"open":""}><summary><h3>${title}</h3></summary><div class="pack-body">${body}</div></details></section>`;
+// Welcome: open at the top on the first day this phone opens the guide, then tucked away at the bottom
+const WELCOME_TITLE = "Welcome to The Great E-scape";
+const WELCOME_BODY = `<p>Hello Sharon, Tony, Pat and Jen. I'm your guide for the whole trip, from Lakes Entrance to the rail trail and beyond.</p>
+    <ul class="hl">
+      <li><b>Trip</b> has your progress, bookings, accommodation, bike shops and emergency numbers.</li>
+      <li><b>Days</b> has each day's route, stops, packing list and notes. Tick things off as you go.</li>
+    </ul>
+    <h3>Milestones move your progress bar</h3>
+    <p>Each day has a few milestones with a dotted border. Tap one when you get there and your progress bar moves along.</p>
+    <div class="ms-demo" aria-hidden="true">
+      <div class="ms"><i></i><span><b>Arrived Everton</b><small>28 km · tap when you get here</small></span></div>
+      <div class="ms on"><i></i><span><b>Arrived Everton</b><small>28 km · ticked at 10:42 am</small></span></div>
+    </div>
+    <ul class="hl">
+      <li>Your ticks and notes are saved on this phone only.</li>
+      <li>Open me each morning while you have signal, and I'll keep working all day without it.</li>
+    </ul>
+    <p>Keep an eye out. I might have a few surprises along the way.</p>`;
+function welcomeFresh(){ const f=sget("welcome_first",null); if(!f){ S.welcome_first=todayISO; save(); return true } return f===todayISO }
+const welcomeTop = () => welcomeFresh() ? `<section class="card welcome"><h2>${WELCOME_TITLE}</h2>${WELCOME_BODY}</section>` : "";
+const welcomeEnd = () => welcomeFresh() ? "" : fold("welcome",WELCOME_TITLE,`<div class="welcome-in">${WELCOME_BODY}</div>`);
 
 function tripView(){
   const p=progress(), f=DAYS[focusIdx];
@@ -636,6 +662,7 @@ function tripView(){
   else { label=`Next · ${shortDate(f)}`; }
   const sur = SURPRISES[todayISO];
   return `
+  ${welcomeTop()}
   ${sur?surpriseHTML(sur):""}
   ${fold("progress",`Your progress · ${p.km} km`,`    <div class="tally">
       <div class="stat"><b>${p.done}/${MS.length}</b><span>milestones</span></div>
@@ -672,6 +699,7 @@ function tripView(){
     </ul>`)}
   ${rulesHTML()}
   ${wisdomHTML()}
+  ${welcomeEnd()}
   `;
 }
 
