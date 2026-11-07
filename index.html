@@ -521,9 +521,7 @@ const DAYS = [
   { id:"post1", date:"2026-11-16", kind:"post", title:"Bright/Bowral", short:"Bright/Bowral",
     intro:"Pat and Jen head home, and Shaz and Tony stay on in Bright. Either way, Sparky's officially off duty ✨",
     start:["Goldfield Holiday Units","55 Gavan Street, Bright VIC 3741"],
-    flow:[
-      {sec:"Accommodation", stops:[{n:"Goldfield Holiday Units", tag:"Check in 3pm", loc:"55 Gavan Street, Bright 3741"}]}
-    ]}
+    flow:[]}
 ];
 
 // Draft only: what still needs checking before the guide goes out.
@@ -812,7 +810,7 @@ function dayView(){
   </section>
   ${listHTML("pack",d)}
   ${nextDay(ui.day)&&nextDay(ui.day).kind==="ride"?listHTML("eod",d):""}
-  <div class="row-end"><span class="meta">${ride?"The day, stop by stop":"Details"}</span><button class="link" id="toggle-all">${anyOpen?"Collapse all":"Expand all"}</button></div>
+  ${d.flow.some(f=>f.sec)?`<div class="row-end"><span class="meta">${ride?"The day, stop by stop":"Details"}</span><button class="link" id="toggle-all">${anyOpen?"Collapse all":"Expand all"}</button></div>`:""}
   <div class="flow">${flow}</div>
   <section class="card">
     <label for="note-${d.id}"><h3>Notes</h3></label>
@@ -871,7 +869,7 @@ function render(){
   v.querySelectorAll("[data-hide]").forEach(b=>b.onclick=()=>keep(()=>sset("hid_"+b.dataset.hide,!S["hid_"+b.dataset.hide])));
   v.querySelectorAll("[data-col]").forEach(b=>b.onclick=()=>keep(()=>sset(b.dataset.col,!S[b.dataset.col])));
   if($("#finished")) $("#finished").onclick=()=>{ fx("emoji"); showPop(FINALE.title,FINALE.text,FINALE.button,()=>{ if(!S.finale){ S.finale=stamp(); save() } stopFx(); ui.view="trip"; render(); window.scrollTo(0,0) }) };
-  $("#toggle-all").onclick=()=>keep(()=>{ const anyOpen=d.flow.some(f=>f.sec&&!S[secId(d,f)]); d.flow.forEach(f=>{ if(f.sec){ if(anyOpen) S[secId(d,f)]=true; else delete S[secId(d,f)] } }); save() });
+  if($("#toggle-all")) $("#toggle-all").onclick=()=>keep(()=>{ const anyOpen=d.flow.some(f=>f.sec&&!S[secId(d,f)]); d.flow.forEach(f=>{ if(f.sec){ if(anyOpen) S[secId(d,f)]=true; else delete S[secId(d,f)] } }); save() });
 
   // Packing
   v.querySelectorAll("details[data-dfold]").forEach(x=>x.ontoggle=()=>sset("dfold_"+x.dataset.dfold+"_"+d.id,x.open?undefined:false));
