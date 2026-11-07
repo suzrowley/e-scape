@@ -667,7 +667,7 @@ const WELCOME_BODY = `<p class="hello">Hi Shaz, Tony, Pat and Jen 👋</p>
     <p>Open me while you've got signal, and I'll keep working all day without it. Your ticks and notes are saved on this phone only.</p>
     <p class="welcome-end">Charge the batteries, get ready for some fun, and I'll see you on the road.</p>
     <p class="sign">Sparky ✨</p>`;
-const WELCOME_LATER = `<p class="notes welcome-later">If you need me again, from tomorrow you'll find this welcome at the bottom of the Trip page.</p>`;
+const WELCOME_LATER = `<p class="notes welcome-later">If you need my very helpful welcome note again, from tomorrow you'll find it at the bottom of the Trip page.</p>`;
 function welcomeFresh(){ const f=sget("welcome_first",null); if(!f){ S.welcome_first=todayISO; save(); return true } return f===todayISO }
 // First day: open at the top (can still be collapsed). After that: collapsed at the bottom.
 const welcomeTop = () => welcomeFresh() ? fold("welcome1",WELCOME_TITLE,`<div class="welcome-in">${WELCOME_BODY}${WELCOME_LATER}</div>`,false,true).replace('<section class="card">','<section class="card welcome">') : "";
