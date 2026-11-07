@@ -389,19 +389,19 @@ const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + encodeU
 // A stop's "at" is cumulative trail km, used to nudge the progress spine between milestones.
 const DAYS = [
   { id:"pre1", date:"2026-11-09", kind:"pre", title:"Lakes Entrance", short:"Lakes Entrance",
-    intro:"Pre-trip stay on the Esplanade.",
+    intro:"Pre-trip stay on the Esplanade. Sea air, a good dinner and straight into holiday mode. Tough start ✨",
     start:["Driftwood Townhouse","617 Esplanade, Lakes Entrance VIC 3909"],
     flow:[
       {sec:"Accommodation", stops:[{n:"Driftwood Townhouse", tag:"Check in 2pm", d:"Waterfront, central location.", loc:"617 Esplanade, Lakes Entrance 3909"}]}
     ]},
   { id:"bday", date:"2026-11-10", kind:"pre", title:"Exploring Lakes Entrance and circling the sun", short:"Lakes Entrance, Tony's birthday",
-    intro:"A free day in Lakes Entrance, and Tony's birthday.",
+    intro:"A free day in Lakes Entrance. Tony, I hear it's your birthday. Happy birthday! Hope you have a sparkly day ✨",
     start:["Driftwood Townhouse","617 Esplanade, Lakes Entrance VIC 3909"],
     flow:[
       {sec:"Accommodation", stops:[{n:"Driftwood Townhouse", tag:"Second night", loc:"617 Esplanade, Lakes Entrance 3909"}]}
     ]},
   { id:"pre2", date:"2026-11-11", kind:"pre", title:"Wangaratta staging night", short:"Wangaratta staging",
-    intro:"Bikes off the cars, ready to roll in the morning.",
+    intro:"Bikes off the cars, batteries on charge. Tomorrow, we roll. Ready or not ✨",
     start:["Painters Island Holiday Park","Painters Island Holiday Park, Pinkerton Crescent, Wangaratta VIC 3677"],
     alerts:[{t:"Cars stay here", d:"The cars stay parked at Painters Island for the whole ride. Collect them on Sun 15 Nov."}],
     flow:[
@@ -410,7 +410,7 @@ const DAYS = [
   { id:"r1", date:"2026-11-12", kind:"ride", n:1, title:"Wangaratta to Beechworth", short:"Wangaratta to Beechworth",
     km:"44 km", grade:"Easy, then intermediate", climb:"174 m to Everton, then the Beechworth climb", surface:"Sealed trail",
     terrain:"Flat to gently uphill to Everton, then a long, steady climb on the Beechworth branch.",
-    intro:"Flat farmland first, then the climb up to Beechworth. Long but gentle on e-bikes.",
+    intro:"Flat farmland first, then the climb to Beechworth. Long but gentle. Let the motor earn its keep ✨",
     start:["Apex Park, Wangaratta","Apex Park, Wangaratta VIC"], finish:["Armour Motor Inn","Armour Motor Inn, 1 Camp Street, Beechworth VIC 3747"],
     alerts:[{t:"Tricky turn near Detour Road", d:"Near the Vine Hotel, look left towards the train line."},
             {t:"The climb starts after Everton", d:"Fuel up at Everton. The Beechworth branch is a long, steady climb."}],
@@ -443,7 +443,7 @@ const DAYS = [
   { id:"r2", date:"2026-11-13", kind:"ride", n:2, title:"Beechworth to Bright", short:"Beechworth to Bright",
     km:"72 km", grade:"Intermediate", climb:"Long descent, then Taylors Gap", surface:"Sealed trail",
     terrain:"Downhill to Everton, a hill to Taylors Gap, then the Ovens Valley to Bright.",
-    intro:"The longest day. Downhill off the plateau, then up the valley to Bright.",
+    intro:"The longest day. Downhill off the plateau, then up the valley to Bright. Keep an eye on those batteries... and each other ✨",
     start:["Armour Motor Inn","Armour Motor Inn, 1 Camp Street, Beechworth VIC 3747"], finish:["Adina Lodge Bright","Adina Lodge, 1 Ashwood Avenue, Bright VIC 3741"],
     alerts:[{t:"Battery range", d:"72 km is past your 70 km range. Charge fully overnight and go easy on boost. Myrtleford Cycle Centre may be able to shuttle you from Myrtleford to Bright."},
             {t:"Long descent", d:"About 17 km downhill to Everton. Keep your speed in check."},
@@ -471,7 +471,7 @@ const DAYS = [
   { id:"r3", date:"2026-11-14", kind:"ride", n:3, title:"Bright to Myrtleford", short:"Bright to Myrtleford",
     km:"About 30 km", grade:"Intermediate", climb:"Gentle valley grade", surface:"Sealed trail",
     terrain:"Mostly flat with gentle undulations down the valley. Optional 11 km return ride to Wandi first.",
-    intro:"An easy day down the valley. Lunch is your call: a cafe in Myrtleford, or bring your own.",
+    intro:"An easy day down the valley. You're welcome ✨",
     start:["Adina Lodge Bright","Adina Lodge, 1 Ashwood Avenue, Bright VIC 3741"], finish:["Myrtleford Hotel","Myrtleford Hotel, 67 Standish Street, Myrtleford VIC 3737"],
     water:"Water and toilets in Bright, Porepunkah and Myrtleford.",
     highlights:["Optional morning ride to Wandiligong, a heritage gold and orchard village","An easy, shorter day to rest the legs","Myrtleford's Mosaic Trail along the Ovens River"],
@@ -495,7 +495,7 @@ const DAYS = [
   { id:"r4", date:"2026-11-15", kind:"ride", n:4, title:"Myrtleford to Wangaratta", short:"Myrtleford to Wangaratta",
     km:"65 km", grade:"Intermediate, then easy", climb:"Taylors Gap, then mostly downhill and flat", surface:"Sealed trail and quiet country roads",
     terrain:"Uphill to Taylors Gap, down to Everton, then flat via Milawa and Oxley.",
-    intro:"The home run, with a cheese and wine stop at Milawa.",
+    intro:"The home run, with a cheese and wine stop at Milawa. Pace yourselves on the tastings ✨",
     start:["Myrtleford Hotel","Myrtleford Hotel, 67 Standish Street, Myrtleford VIC 3737"], finish:["Painters Island Holiday Park","Painters Island Holiday Park, Pinkerton Crescent, Wangaratta VIC 3677"],
     alerts:[{t:"Climb out of Myrtleford", d:"The trail climbs to Taylors Gap first thing. Steady, with a pinch at the top."},
             {t:"Country roads to Milawa", d:"Part of the Everton to Milawa leg uses quiet roads shared with cars. Ride single file."},
@@ -518,8 +518,8 @@ const DAYS = [
         {n:"Painters Island Holiday Park", tag:"Check in 3pm", d:"The cars are here. Time to reunite.", loc:"Pinkerton Crescent, Wangaratta 3677"},
         {n:"Cafe the PreVue", tag:"Coffee", d:"Good spot for a debrief. Open daily, 8am to 4pm.", loc:"66-68 Faithfull Street, Wangaratta", phone:"03 5721 2092"}]}
     ]},
-  { id:"post1", date:"2026-11-16", kind:"post", title:"Bright, post-trip", short:"Bright post-trip",
-    intro:"A few easy days back in Bright.",
+  { id:"post1", date:"2026-11-16", kind:"post", title:"Bright/Bowral", short:"Bright/Bowral",
+    intro:"Some heading home, others staying on in Bright. Either way, Sparky's officially off duty ✨",
     start:["Goldfield Holiday Units","55 Gavan Street, Bright VIC 3741"],
     flow:[
       {sec:"Accommodation", stops:[{n:"Goldfield Holiday Units", tag:"Check in 3pm", loc:"55 Gavan Street, Bright 3741"}]}
