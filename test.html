@@ -221,6 +221,7 @@ textarea:focus{outline:none;border-color:var(--sea)}
 .wq .q{font-size:17px;line-height:1.4}
 .finished{display:grid;gap:2px;justify-items:center;background:var(--sun);color:var(--on-sun);border:0;border-radius:14px;padding:14px;font:700 20px var(--body);cursor:pointer;width:100%}
 .surprise.center{text-align:center}
+.surprise.center p{white-space:pre-line}
 .envelope{display:grid;justify-items:center;gap:8px;text-align:center;padding:26px 16px;border-radius:16px;border:0;background:var(--sun);color:var(--on-sun);cursor:pointer;font:inherit;width:100%;margin:0 0 14px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
 .envelope .seal{width:64px;height:64px;border-radius:50%;background:var(--on-sun);color:var(--sun);display:grid;place-items:center;font:650 30px var(--display)}
 .envelope b{font:650 24px/1.2 var(--display)}
@@ -345,7 +346,7 @@ const SURPRISES = {
       {who:"A message from Hugo", kid:"hugo", em:"🎉", kind:"audio", src:"voice/hugo.mp3", len:"Voice note · 1 min 41"},
       {who:"A message from Kai", kid:"kai", em:"🥳", kind:"audio", src:"voice/kai.mp3", len:"Voice note · 5 sec", sub:"Visuals will be shared via WhatsApp"},
       {who:"A message from Liya", kid:"liya", em:"🎁", kind:"audio", src:"voice/liya.mp3", len:"Voice note · 2 sec", sub:"Performance video will be shared via WhatsApp"}]},
-  "2026-11-16": {center:true, title:"Farewell, Pat and Jen 👋", text:"Have a safe trip home. This little app has loved being by your side for the ride."}
+  "2026-11-16": {center:true, title:"Farewell, Pat and Jen 👋", text:"Have a safe trip home.\nThis little app has loved being by your side for the ride."}
 };
 
 // Words of Questionable Wisdom. Each pops up from its start time until it's noted, one at a time, in this order.
@@ -880,7 +881,7 @@ function bindVoice(root){
 const NOTE_IC={audio:PLAY, video:'<svg viewBox="0 0 24 24"><path d="M3 6h12a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm14 4 5-3v10l-5-3z"/></svg>'};
 const surpriseHTML = sur => sur.card
   ? `<button class="envelope" type="button" data-card="1"><span class="seal">${esc(sur.seal)}</span><b>${esc(sur.title)}</b><span>${esc(sur.hint)}</span></button>`
-  : `<section class="card surprise${sur.center?" center":""}"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p>${voiceHTML(sur)}</section>`;
+  : `<section class="card surprise${sur.center?" center":""}"><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p>${voiceHTML(sur)}</section>`;
 let bcAudio=null, bcSur=null;
 function bcStop(){ if(!bcAudio) return; bcAudio.a.pause(); bcAudio.b.querySelector(".ic").innerHTML=PLAY; bcAudio=null }
 function openCard(sur){
