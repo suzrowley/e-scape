@@ -345,14 +345,14 @@ const BIKE_SHOPS = [
 // Example: "2026-11-12": {title:"Good luck today", text:"..."}
 // To do: Tony's birthday surprise for "2026-11-10".
 const SURPRISES = {
-  "2026-11-10": {card:true, seal:"T", title:"Something for Tony", hint:"Tap to open",
+  "2026-11-10": {card:true, seal:"T", title:"Something for Tone", hint:"Tap to open",
     head:"Happy Birthday!", text:"We hope you have a fabulous day!\nHere are a few messages for you, and lunch today is covered by your kids. xxx",
     notes:[
       {who:"A message from Felix", kid:"felix", em:"🎂", kind:"audio", src:"voice/felix.mp3", len:"Voice note · 14 sec"},
       {who:"A message from Hugo", kid:"hugo", em:"🎉", kind:"audio", src:"voice/hugo.mp3", len:"Voice note · 1 min 41"},
       {who:"A message from Kai", kid:"kai", em:"🥳", kind:"audio", src:"voice/kai.mp3", len:"Voice note · 5 sec", sub:"Visuals will be shared via WhatsApp"},
       {who:"A message from Liya", kid:"liya", em:"🎁", kind:"audio", src:"voice/liya.mp3", len:"Voice note · 2 sec", sub:"Performance video will be shared via WhatsApp"}]},
-  "2026-11-16": {center:true, title:"Our time together has come to an end 😢", text:"\nI hope you had as much fun as I did!\n\nPat and Jen, have a safe trip home.\n\nSharon and Tony, I will wrap this part of your trip up here.\nEnjoy the rest of your time in Bright and have a safe trip back home via Canberra.\n\nThis little app has loved being by your side for the ride.\n❤️"}
+  "2026-11-16": {center:true, title:"Our time together has come to an end 😢", text:"\nI hope you had as much fun as I did!\n\nPat and Jen, have a safe trip home.\n\nShaz and Tone, I will wrap this part of your trip up here.\nEnjoy the rest of your time in Bright and have a safe trip back home via Canberra.\n\nThis little app has loved being by your side for the ride.\n❤️"}
 };
 
 // Words of Questionable Wisdom. Each pops up from its start time until it's noted, one at a time, in this order.
@@ -387,8 +387,8 @@ const DAYS = [
     flow:[
       {sec:"Accommodation", stops:[{n:"Driftwood Townhouse", tag:"Check in 2pm", d:"Waterfront, central location.", loc:"617 Esplanade, Lakes Entrance 3909"}]}
     ]},
-  { id:"bday", date:"2026-11-10", kind:"pre", title:"Exploring Lakes Entrance and circling the sun", short:"Lakes Entrance, Tony's birthday",
-    intro:"A free day in Lakes Entrance, and Tony's birthday.",
+  { id:"bday", date:"2026-11-10", kind:"pre", title:"Exploring Lakes Entrance and circling the sun", short:"Lakes Entrance, Tone's birthday",
+    intro:"A free day in Lakes Entrance, and Tone's birthday.",
     start:["Driftwood Townhouse","617 Esplanade, Lakes Entrance VIC 3909"],
     flow:[
       {sec:"Accommodation", stops:[{n:"Driftwood Townhouse", tag:"Second night", loc:"617 Esplanade, Lakes Entrance 3909"}]}
@@ -633,7 +633,7 @@ function bookingsHTML(){
 const fold = (id,title,body,force,defOpen=false) => `<section class="card"><details class="pack" data-fold="${id}" ${sget("fold_"+id,defOpen)||force?"open":""}><summary><h3>${title}</h3></summary><div class="pack-body">${body}</div></details></section>`;
 // Welcome: open at the top on the first day this phone opens the guide, then tucked away at the bottom
 const WELCOME_TITLE = "Welcome to The Great E-scape";
-const WELCOME_BODY = `<p>Hello Sharon, Tony, Pat and Jen. I'm your guide for the whole trip, from Lakes Entrance to the rail trail and beyond.</p>
+const WELCOME_BODY = `<p>Hello Shaz, Tone, Pat and Jen. I'm your guide for the whole trip, from Lakes Entrance to the rail trail and beyond.</p>
     <ul class="hl">
       <li><b>Trip</b> has your progress, bookings, accommodation, bike shops and emergency numbers.</li>
       <li><b>Days</b> has each day's route, stops, packing list and notes. Tick things off as you go.</li>
