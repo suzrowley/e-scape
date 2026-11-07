@@ -950,7 +950,7 @@ function wisdomHTML(){
   if(S.finale) got.push({w:{text:FINALE.text},s:S.finale});
   if(!got.length) return "";
   got.sort((a,b)=>b.s.ts-a.s.ts);
-  return fold("wisdom","Words of Questionable Wisdom",`
+  return fold("wisdom","Words of Questionable Wisdom ✨",`
     ${got.map(x=>`<div class="wq"><span class="meta">${esc(x.s.t)}</span><span class="q">${esc(x.w.text)}</span></div>`).join("")}`,false,true);
 }
 const rulesList=()=>`<ol class="rules">${RULES.items.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`;
@@ -967,7 +967,7 @@ function checkWisdom(){
   if(!$("#wpop").hidden) return;
   const i=wisdomDue();
   if(i<0){ if(!S.rules&&wTime(RULES).getTime()<=Date.now()) showPop(RULES.label,"","Noted",()=>{ S.rules=stamp(); save(); if(ui.view==="trip") keep(()=>{}) },`<h2>${esc(RULES.title)}</h2>${rulesList()}`); return }
-  showPop("Words of Questionable Wisdom",WISDOM[i].text,"Noted",()=>{ S["wq_"+i]=stamp(); save(); if(ui.view==="trip") keep(()=>{}); setTimeout(checkWisdom,600) });
+  showPop("Words of Questionable Wisdom ✨",WISDOM[i].text,"Noted",()=>{ S["wq_"+i]=stamp(); save(); if(ui.view==="trip") keep(()=>{}); setTimeout(checkWisdom,600) });
 }
 function storeCheck(){ let ok=false; try{ localStorage.setItem("m2m_probe","1"); ok=localStorage.getItem("m2m_probe")==="1"; localStorage.removeItem("m2m_probe") }catch(e){}
   const n=WISDOM.filter((w,i)=>S["wq_"+i]).length;
