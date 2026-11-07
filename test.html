@@ -586,6 +586,8 @@ function progress(){
 }
 const stopId = (d,f,s) => "s_"+d.id+"_"+slug(f.sec)+"_"+slug(s.n);
 const secId = (d,f) => "sec_"+d.id+"_"+slug(f.sec);
+// Stops they add themselves, per section, on this phone only
+const allStops = (d,f) => f.stops.concat((S["own_"+secId(d,f)]||[]).map(n=>({n,own:true})));
 function rideDone(d){ const ms=MS.filter(m=>m.day===d.id); return ms.length && ms.every(m=>S["ms_"+m.idx]) }
 
 function renderSpine(){
@@ -620,7 +622,7 @@ function summary(){
     const lines=[];
     d.flow.forEach(f=>{
       if(f.ms && S["ms_"+f.idx]) lines.push(`  ✓ ${f.ms} (${S["ms_time_"+f.idx]||""})`);
-      if(f.sec) f.stops.forEach(s=>{ if(S[stopId(d,f,s)]) lines.push(`  ✓ ${s.n}`) });
+      if(f.sec) allStops(d,f).forEach(s=>{ if(S[stopId(d,f,s)]) lines.push(`  ✓ ${s.n}`) });
     });
     const note=(S["note_"+d.id]||"").trim();
     if(note) lines.push("  Notes: "+note.replace(/\n/g,"\n  "));
@@ -666,7 +668,7 @@ const WELCOME_BODY = `<p class="hello">Hi Shaz, Tony, Pat and Jen 👋</p>
     <details class="pack ex"><summary><h3>Tap me</h3></summary><div class="pack-body"><p>That's it. Tap the heading again to close me.</p></div></details>
     <h3>Stops and cafes</h3>
     <p>If you call in somewhere, tick it off. If you don't, no worries. This is a holiday, not an obstacle course.</p>
-    <p>Tap Edit on any day to hide a stop you're skipping, rename one or add your own.</p>
+    <p>Tap Edit on any section to hide a stop you're skipping or add your own.</p>
     <h3>Packing list</h3>
     <p>Each day has a packing list, and the ticks start fresh every morning.</p>
     <p>You can add and remove things, and change the section titles to suit you. Make your changes on any day and they'll carry across to all the others, so you only need to do it once.</p>
@@ -741,7 +743,7 @@ function stopHTML(d,f,s,editing){
       <span class="nm">${esc(s.n)}</span>${s.tag?`<span class="tag">${esc(s.tag)}</span>`:""}${s.book?`<span class="tag book">${s.booked?"Booked":"Book ahead"}</span>`:""}
       ${s.d?`<span class="ds">${esc(s.d)}</span>`:""}${s.loc?`<span class="lc">${esc(s.loc)}</span>`:""}
     </span></button>
-    ${editing&&!on?`<button class="hide-btn ${hid?"restore":""}" data-hide="${id}">${hid?"Show":"Hide"}</button>`:""}
+    ${editing&&s.own?`<button class="hide-btn" data-own-rm="${esc(secId(d,f))}|${esc(s.n)}">Remove</button>`:editing&&!on?`<button class="hide-btn ${hid?"restore":""}" data-hide="${id}">${hid?"Show":"Hide"}</button>`:""}
   </div>${s.phone&&!hid?`<div class="phone"><span>${esc(s.phone)}</span><button class="copy" data-n="${esc(s.phone)}">Copy</button></div>`:""}`;
 }
 
@@ -782,12 +784,13 @@ function dayView(){
     if(f.finished) return todayISO<d.date ? "" : `<button class="finished" type="button" id="finished">Finished?<small>Tap when you're all back</small></button>`;
     if(f.alert) return `<div class="alert"><b>${esc(f.alert.t)}</b><span>${esc(f.alert.d)}</span></div>`;
     const sid=secId(d,f), closed=!!S[sid], editing=ui.editSec===sid;
-    const hiddenCount=f.stops.filter(s=>S["hid_"+stopId(d,f,s)]).length;
+    const hiddenCount=allStops(d,f).filter(s=>S["hid_"+stopId(d,f,s)]).length;
     return `<div class="sec ${closed&&!editing?"closed":""}">
       <div class="sec-head"><span class="meta">${esc(f.sec)}</span><span class="sec-tools">
-        ${f.stops.length>1?`<button class="link" data-edit="${sid}">${editing?"Done":"Edit"}</button>`:""}
+        <button class="link" data-edit="${sid}">${editing?"Done":"Edit"}</button>
         <button class="chev" data-col="${sid}" aria-label="${closed?"Show":"Hide"} ${esc(f.sec)}" aria-expanded="${!closed}">⌄</button></span></div>
-      <div class="stops">${f.stops.map(s=>stopHTML(d,f,s,editing)).join("")}
+      <div class="stops">${allStops(d,f).map(s=>stopHTML(d,f,s,editing)).join("")}
+        ${editing?`<form class="add" data-own-add="${sid}"><input type="text" placeholder="Add your own stop" aria-label="Add your own stop to ${esc(f.sec)}" autocomplete="off"><button class="btn" type="submit">Add</button></form>`:""}
         ${hiddenCount&&!editing?`<p class="notes">${hiddenCount} hidden. Tap Edit to show.</p>`:""}
         ${ui.prompt===sid?`<div class="prompt"><span>Hide the other options in this section?</span><div class="btns"><button class="btn" data-pyes="${fi}">Yes</button><button class="btn alt" data-pno="1">Keep</button></div></div>`:""}
       </div></div>`;
@@ -869,13 +872,15 @@ function render(){
     const id=b.dataset.id; sset(id,!S[id]);
     ui.prompt=null;
     if(S[id] && ui.editSec===null){
-      const f=d.flow.find(f=>f.sec&&f.stops.some(s=>stopId(d,f,s)===id));
-      if(f.stops.some(s=>{const o=stopId(d,f,s);return o!==id&&!S[o]&&!S["hid_"+o]})) ui.prompt=secId(d,f);
+      const f=d.flow.find(f=>f.sec&&allStops(d,f).some(s=>stopId(d,f,s)===id));
+      if(f&&allStops(d,f).some(s=>{const o=stopId(d,f,s);return o!==id&&!S[o]&&!S["hid_"+o]})) ui.prompt=secId(d,f);
     }
   }));
-  v.querySelectorAll("[data-pyes]").forEach(b=>b.onclick=()=>keep(()=>{ const f=d.flow[+b.dataset.pyes]; f.stops.forEach(s=>{const o=stopId(d,f,s); if(!S[o]) S["hid_"+o]=true}); save(); ui.prompt=null }));
+  v.querySelectorAll("[data-pyes]").forEach(b=>b.onclick=()=>keep(()=>{ const f=d.flow[+b.dataset.pyes]; allStops(d,f).forEach(s=>{const o=stopId(d,f,s); if(!S[o]) S["hid_"+o]=true}); save(); ui.prompt=null }));
   v.querySelectorAll("[data-pno]").forEach(b=>b.onclick=()=>keep(()=>ui.prompt=null));
   v.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>keep(()=>{ ui.prompt=null; ui.editSec = ui.editSec===b.dataset.edit?null:b.dataset.edit }));
+  v.querySelectorAll("form[data-own-add]").forEach(fm=>fm.onsubmit=e=>{ e.preventDefault(); const k="own_"+fm.dataset.ownAdd, t=fm.querySelector("input").value.trim(); if(!t) return; keep(()=>{ const l=(S[k]||[]).filter(x=>x!==t); l.push(t); sset(k,l) }) });
+  v.querySelectorAll("[data-own-rm]").forEach(b=>b.onclick=()=>keep(()=>{ const [sid,n]=b.dataset.ownRm.split("|"), k="own_"+sid; sset(k,(S[k]||[]).filter(x=>x!==n)) }));
   v.querySelectorAll("[data-hide]").forEach(b=>b.onclick=()=>keep(()=>sset("hid_"+b.dataset.hide,!S["hid_"+b.dataset.hide])));
   v.querySelectorAll("[data-col]").forEach(b=>b.onclick=()=>keep(()=>sset(b.dataset.col,!S[b.dataset.col])));
   if($("#finished")) $("#finished").onclick=()=>{ fx("emoji"); showPop(FINALE.title,FINALE.text,FINALE.button,()=>{ if(!S.finale){ S.finale=stamp(); save() } stopFx(); ui.view="trip"; render(); window.scrollTo(0,0) }) };
