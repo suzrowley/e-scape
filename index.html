@@ -103,7 +103,9 @@ ul.hl{margin:0;padding-left:20px;display:grid;gap:6px}
 .welcome{border:2px solid var(--sun)}
 .welcome-in h3{margin:16px 0 4px;font-size:17px}
 .welcome-in p{margin:6px 0}
-.sparky{font:600 22px var(--display);margin:8px 0 4px!important}
+.welcome-in .sparky{margin-top:10px}
+.sign{font:600 17px var(--display);margin-top:10px!important}
+.welcome-later{margin-top:16px!important;padding-top:10px;border-top:1px solid var(--line)}
 .welcome-end{font-weight:700;margin-top:14px!important}
 details.pack.ex{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0}
 details.pack.ex>summary h3{font-size:17px;margin:0}
@@ -635,13 +637,15 @@ function bookingsHTML(){
 // A collapsible card on the Trip page. Closed until the viewer opens it; this phone remembers.
 const fold = (id,title,body,force,defOpen=false) => `<section class="card"><details class="pack" data-fold="${id}" ${sget("fold_"+id,defOpen)||force?"open":""}><summary><h3>${title}</h3></summary><div class="pack-body">${body}</div></details></section>`;
 // Welcome: open at the top on the first day this phone opens the guide, then tucked away at the bottom
-const WELCOME_TITLE = "Welcome to The Great E-scape 🚲";
-const WELCOME_BODY = `<p>Hi Shaz, Tony, Pat and Jen,</p>
-    <p class="sparky">I'm Sparky ✨</p>
-    <p>I'm your guide for the whole adventure, from Lakes Entrance, along the rail trail and back to Wangaratta. Four e-bikes, four days of riding and plenty of good food and wine. We're going to have a great time.</p>
-    <p>Here's how I work.</p>
+const WELCOME_TITLE = "Welcome to The Great E-scape";
+const WELCOME_BODY = `<p>Hi Shaz, Tony, Pat and Jen 👋</p>
+    <h3 class="sparky">I'm Sparky ✨</h3>
+    <p>Your trusty little guide for the whole adventure, from Lakes Entrance, along the rail trail and back to Wangaratta.</p>
+    <p>Four e-bikes, four days of riding, plenty of good food and wine, and absolutely no prizes for getting there first. We're going to have a great time.</p>
+    <p>I'll keep track of the practical bits so you can concentrate on the important things, like where to stop for coffee, what's for lunch and who's buying the next round.</p>
+    <p><b>Here's how I work.</b></p>
     <h3>Milestones move your progress bar</h3>
-    <p>These are the only things you really need to tick. Each day has a few, with a dotted border. Tap one when you get there and your progress bar moves along.</p>
+    <p>These are the only things you really need to tick. Each day has a few, with a dotted border. Tap one when you get there and your progress bar moves along. Very satisfying, even if you've taken the scenic route.</p>
     <div class="ms-demo" aria-hidden="true">
       <div class="ms"><i></i><span><b>Arrived Everton</b><small>28 km · tap when you get here</small></span></div>
       <div class="ms on"><i></i><span><b>Arrived Everton</b><small>28 km · ticked at 10:42 am</small></span></div>
@@ -650,18 +654,21 @@ const WELCOME_BODY = `<p>Hi Shaz, Tony, Pat and Jen,</p>
     <p>Tap any heading with an arrow to open or close it. Have a go:</p>
     <details class="pack ex"><summary><h3>Tap me</h3></summary><div class="pack-body"><p>That's it. Tap the heading again to close me.</p></div></details>
     <h3>Stops and cafes</h3>
-    <p>If you call in somewhere, you can tick it off, but it doesn't matter if you don't. Tap Edit on any day to hide a stop you're skipping, rename one or add your own.</p>
+    <p>If you call in somewhere, tick it off. If you don't, no worries. This is a holiday, not an obstacle course.</p>
+    <p>Tap Edit on any day to hide a stop you're skipping, rename one or add your own.</p>
     <h3>Packing list</h3>
     <p>Each day has a packing list, and the ticks start fresh every morning.</p>
-    <p>You can add and remove things, and change the section titles to suit you. Make your changes on any day and they carry across to all your other days, so you only need to do it once.</p>
+    <p>You can add and remove things, and change the section titles to suit you. Make your changes on any day and they'll carry across to all the others, so you only need to do it once.</p>
     <h3>Notes</h3>
-    <p>Each day has a notes box for the good bits, the funny bits and anything else you want to remember. On the last day you can copy them all to keep.</p>
+    <p>Each day has a notes box for the good bits, the funny bits and the stories that might get better with every retelling. On the last day, you can copy them all to keep.</p>
     <h3>Open me each morning</h3>
-    <p>Open me while you have signal, and I'll keep working all day without it. Your ticks and notes are saved on this phone only.</p>
-    <p class="welcome-end">Right, let's get rolling and have some fun!</p>`;
+    <p>Open me while you've got signal, and I'll keep working all day without it. Your ticks and notes are saved on this phone only.</p>
+    <p class="welcome-end">Charge the batteries, pack your sense of humour, and I'll see you on the road.</p>
+    <p class="sign">Sparky ✨</p>`;
+const WELCOME_LATER = `<p class="notes welcome-later">If you need me again, from tomorrow you'll find this welcome at the bottom of the Trip page.</p>`;
 function welcomeFresh(){ const f=sget("welcome_first",null); if(!f){ S.welcome_first=todayISO; save(); return true } return f===todayISO }
 // First day: open at the top (can still be collapsed). After that: collapsed at the bottom.
-const welcomeTop = () => welcomeFresh() ? fold("welcome1",WELCOME_TITLE,`<div class="welcome-in">${WELCOME_BODY}</div>`,false,true).replace('<section class="card">','<section class="card welcome">') : "";
+const welcomeTop = () => welcomeFresh() ? fold("welcome1",WELCOME_TITLE,`<div class="welcome-in">${WELCOME_BODY}${WELCOME_LATER}</div>`,false,true).replace('<section class="card">','<section class="card welcome">') : "";
 const welcomeEnd = () => welcomeFresh() ? "" : fold("welcome",WELCOME_TITLE,`<div class="welcome-in">${WELCOME_BODY}</div>`);
 
 function tripView(){
