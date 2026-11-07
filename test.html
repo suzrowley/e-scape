@@ -458,9 +458,8 @@ const DAYS = [
   { id:"r3", date:"2026-11-14", kind:"ride", n:3, title:"Bright to Myrtleford", short:"Bright to Myrtleford",
     km:"About 30 km", grade:"Intermediate", climb:"Gentle valley grade", surface:"Sealed trail",
     terrain:"Mostly flat with gentle undulations down the valley. Optional 11 km return ride to Wandi first.",
-    intro:"An easy day down the valley. Lunch to be decided.",
+    intro:"An easy day down the valley, with lunch in Myrtleford.",
     start:["Adina Lodge Bright","Adina Lodge, 1 Ashwood Avenue, Bright VIC 3741"], finish:["Myrtleford Hotel","Myrtleford Hotel, 67 Standish Street, Myrtleford VIC 3737"],
-    alerts:[{t:"Lunch to be decided", d:"Gapsted Estate changed owners in October 2026 and its restaurant won't reopen. If you go, it's about 6 km past Myrtleford, so about 12 km extra there and back. Call (03) 5751 9101 first."}],
     water:"Water and toilets in Bright, Porepunkah and Myrtleford.",
     highlights:["Optional morning ride to Wandiligong, a heritage gold and orchard village","An easy, shorter day to rest the legs","Myrtleford's Mosaic Trail along the Ovens River"],
     flow:[
@@ -470,9 +469,8 @@ const DAYS = [
         {n:"Gum Tree Pies", tag:"Cafe", d:"Gourmet pies with unusual flavours. Hours not confirmed.", loc:"2a Anderson Street, Bright"}]},
       {sec:"Optional ride · Wandiligong", stops:[
         {n:"Wandiligong (Wandi)", tag:"Heritage", d:"Quiet heritage gold and orchard village. A gentle 5.5 km each way along Morses Creek, so 11 km return.", loc:"5.5 km from Bright"}]},
-      {sec:"Lunch · to be decided", stops:[
-        {n:"Reclaim Winebar & Cafe", tag:"Lunch", d:"Cafe meals and local wine in Myrtleford. Kitchen opens 11am.", loc:"55A Standish Street, Myrtleford", phone:"0430 093 633"},
-        {n:"Gapsted Estate Winery", tag:"Maybe", d:"About 6 km past Myrtleford. New owners from October 2026 and the old restaurant won't reopen, but casual food on the deck is planned. Cellar door listed Thursday to Monday, 10am to 4pm. Call first.", loc:"3897 Great Alpine Road, Gapsted", phone:"(03) 5751 9101"}]},
+      {sec:"Lunch · Myrtleford", stops:[
+        {n:"Reclaim Winebar & Cafe", tag:"Lunch", d:"Cafe meals and local wine in Myrtleford. Kitchen opens 11am.", loc:"55A Standish Street, Myrtleford", phone:"0430 093 633"}]},
       {ms:"Arrived Myrtleford", km:145, sub:"Day 3 complete"},
       {sec:"Afternoon · Myrtleford", stops:[
         {n:"Myrtleford Mosaic Trail", tag:"Nature", d:"Sealed loop along the Ovens River with hidden mosaics. Can be started in town.", loc:"Rotary Park to Apex Park, Myrtleford"},
@@ -691,11 +689,7 @@ function tripView(){
     </ul>`)}
   ${rulesHTML()}
   ${wisdomHTML()}
-  <section class="card">
-    <h3>Still to check</h3>
-    ${CHECKS.map(([t,d])=>`<div class="flag"><b>${esc(t)}</b>${esc(d)}</div>`).join("")}
-  </section>
-  <p class="draft">Mock-up. Details still being checked.</p>`;
+  `;
 }
 
 function stopHTML(d,f,s,editing){
