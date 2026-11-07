@@ -770,7 +770,7 @@ function dayView(){
   const ride=d.kind==="ride";
   const flow=d.flow.map((f,fi)=>{
     if(f.ms){ const on=!!S["ms_"+f.idx]; return `<button class="ms ${on?"on":""}" data-ms="${f.idx}" aria-pressed="${on}"><i></i><span><b>${esc(f.ms)}</b><small>${f.km} km${f.sub?" · "+esc(f.sub):""}${on&&S["ms_time_"+f.idx]?" · ticked at "+S["ms_time_"+f.idx]:""}</small></span></button>` }
-    if(f.finished) return `<button class="finished" type="button" id="finished">Finished?<small>Tap when you're all back</small></button>`;
+    if(f.finished) return todayISO<d.date ? "" : `<button class="finished" type="button" id="finished">Finished?<small>Tap when you're all back</small></button>`;
     if(f.alert) return `<div class="alert"><b>${esc(f.alert.t)}</b><span>${esc(f.alert.d)}</span></div>`;
     const sid=secId(d,f), closed=!!S[sid], editing=ui.editSec===sid;
     const hiddenCount=f.stops.filter(s=>S["hid_"+stopId(d,f,s)]).length;
@@ -943,6 +943,7 @@ $("#vv-close").onclick=()=>{ const v=$("#vv-v"); v.pause(); v.removeAttribute("s
 $("#bc-close").onclick=()=>{ bcStop(); stopFx(); $("#bov").hidden=true };
 function stamp(){ const n=new Date(); return {ts:n.getTime(), t:n.toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})} }
 function rulesHTML(){ return S.rules ? fold("rules",RULES.title,rulesList(),false,true) : "" }
+if(S.finale && todayISO<DAYS.filter(x=>x.kind==="ride").pop().date){ delete S.finale; save() }
 function wisdomHTML(){
   const got=WISDOM.map((w,i)=>({w,s:S["wq_"+i]})).filter(x=>x.s);
   if(S.finale) got.push({w:{text:FINALE.text},s:S.finale});
