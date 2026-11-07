@@ -220,6 +220,7 @@ textarea:focus{outline:none;border-color:var(--sea)}
 .wpop h2{font-size:23px;margin:0}
 .wq .q{font-size:17px;line-height:1.4}
 .finished{display:grid;gap:2px;justify-items:center;background:var(--sun);color:var(--on-sun);border:0;border-radius:14px;padding:14px;font:700 20px var(--body);cursor:pointer;width:100%}
+.surprise.center{text-align:center}
 .envelope{display:grid;justify-items:center;gap:8px;text-align:center;padding:26px 16px;border-radius:16px;border:0;background:var(--sun);color:var(--on-sun);cursor:pointer;font:inherit;width:100%;margin:0 0 14px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
 .envelope .seal{width:64px;height:64px;border-radius:50%;background:var(--on-sun);color:var(--sun);display:grid;place-items:center;font:650 30px var(--display)}
 .envelope b{font:650 24px/1.2 var(--display)}
@@ -304,7 +305,7 @@ const SPINE = [
 
 // One master packing list, the same every day. Each phone can edit its own copy.
 const PACKING = [
-  {name:"Bike top", items:["Warm gloves","Glasses","Wallet","Poncho","Vest","Puffer","Buff","Neon vest","Shokz","Wet wipes","Aero guard","Tissues","Snacks","Rubbish bags"]},
+  {name:"Bike top", items:["Warm gloves","Glasses","Wallet","Poncho","Vest","Puffer","Buff","Neon vest","Shokz","Wet wipes","Aerogard","Tissues","Snacks","Rubbish bags"]},
   {name:"Pannier", items:["Battery charger","Umbrella","Toiletries","Device chargers","Cap","Shoes","Towel","Spare pants","Light rain jacket","2 x long sleeve tops","1 x T-shirt","3 x underwear","3 x socks","PJs","First aid kit","Puncture kit","Electric pump and battery"]},
   {name:"General", items:["Water bottle","Suncream"]}
 ];
@@ -344,7 +345,7 @@ const SURPRISES = {
       {who:"A message from Hugo", kid:"hugo", em:"🎉", kind:"audio", src:"voice/hugo.mp3", len:"Voice note · 1 min 41"},
       {who:"A message from Kai", kid:"kai", em:"🥳", kind:"audio", src:"voice/kai.mp3", len:"Voice note · 5 sec", sub:"Visuals will be shared via WhatsApp"},
       {who:"A message from Liya", kid:"liya", em:"🎁", kind:"audio", src:"voice/liya.mp3", len:"Voice note · 2 sec", sub:"Performance video will be shared via WhatsApp"}]},
-  "2026-11-16": {title:"Farewell, Pat and Jen", text:"Have a safe trip home. This little app has loved being by your side for the ride."}
+  "2026-11-16": {center:true, title:"Farewell, Pat and Jen 👋", text:"Have a safe trip home. This little app has loved being by your side for the ride."}
 };
 
 // Words of Questionable Wisdom. Each pops up from its start time until it's noted, one at a time, in this order.
@@ -397,7 +398,7 @@ const DAYS = [
     terrain:"Flat to gently uphill to Everton, then a long, steady climb on the Beechworth branch.",
     intro:"Flat farmland first, then the climb up to Beechworth. Long but gentle on e-bikes.",
     start:["Apex Park, Wangaratta","Apex Park, Wangaratta VIC"], finish:["Armour Motor Inn","Armour Motor Inn, 1 Camp Street, Beechworth VIC 3747"],
-    alerts:[{t:"Tricky turn near Detour Road", d:"Near the Vine Hotel, look left toward the train line."},
+    alerts:[{t:"Tricky turn near Detour Road", d:"Near the Vine Hotel, look left towards the train line."},
             {t:"The climb starts after Everton", d:"Fuel up at Everton. The Beechworth branch is a long, steady climb."}],
     water:"Water and toilets at Apex Park, Everton Station and Beechworth's Old Railway Station. Toilets at Bowser and Tarrawingee stations.",
     highlights:["Old station stops at Bowser and Tarrawingee, with toilets","Pennyweight Winery just before Beechworth","Ned Kelly history at the Beechworth courthouse"],
@@ -423,8 +424,7 @@ const DAYS = [
         {n:"Lake Sambell", tag:"Nature", d:"Lake and gardens. An easy evening stroll.", loc:"Beechworth"}]},
       {sec:"Accommodation · Beechworth", stops:[{n:"Armour Motor Inn", tag:"Check in 2pm", loc:"1 Camp Street, Beechworth 3747"}]},
       {sec:"Dinner · Beechworth", stops:[
-        {n:"Bridge Road Brewers", booked:"", tag:"Dinner", book:true, d:"Craft beer and pizza in an old coach house. Open daily, dinner from 5pm.", loc:"50 Ford Street, Beechworth", phone:"(03) 5728 2703"},
-        {n:"The Provenance", booked:"", tag:"Dinner", book:true, d:"Hatted fine dining in a 19th century bank building. Dinner Friday to Monday only, so likely closed on Thursday 12 Nov.", loc:"86 Ford Street, Beechworth", phone:"(03) 5728 1786"}]}
+        {n:"Bridge Road Brewers", booked:"", tag:"Dinner", book:true, d:"Craft beer and pizza in an old coach house. Open daily, dinner from 5pm.", loc:"50 Ford Street, Beechworth", phone:"(03) 5728 2703"}]}
     ]},
   { id:"r2", date:"2026-11-13", kind:"ride", n:2, title:"Beechworth to Bright", short:"Beechworth to Bright",
     km:"72 km", grade:"Intermediate", climb:"Long descent, then Taylors Gap", surface:"Sealed trail",
@@ -435,7 +435,7 @@ const DAYS = [
             {t:"Long descent", d:"About 17 km downhill to Everton. Keep your speed in check."},
             {t:"Taylors Gap", d:"A short, steeper pinch before the drop into Myrtleford."}],
     water:"Water and toilets at Beechworth's Old Railway Station and Everton Station, then in Myrtleford, Porepunkah and Bright. None confirmed between Everton and Myrtleford.",
-    highlights:["The long downhill run off the Beechworth plateau","Lunch in Myrtleford","Ovens Valley farms and Mount Buffalo views toward Bright"],
+    highlights:["The long downhill run off the Beechworth plateau","Lunch in Myrtleford","Ovens Valley farms and Mount Buffalo views towards Bright"],
     flow:[
       {ms:"Departed Beechworth", km:44, sub:"Day 2 start"},
       {sec:"Breakfast · Beechworth", stops:[
@@ -447,12 +447,11 @@ const DAYS = [
         {n:"Reclaim Winebar & Cafe", tag:"Lunch", d:"Cafe meals and local wine. Kitchen Friday to Tuesday, 11am to 8.30pm. Known for its butter chicken.", loc:"55A Standish Street, Myrtleford", phone:"0430 093 633"}]},
       {sec:"Afternoon stops · on to Bright", stops:[
         {n:"Australian Pumpkin Seed Co.", tag:"Produce", d:"Taste pumpkin seeds and oil, and watch the factory through a window. Hours not confirmed, so call ahead.", loc:"5061 Great Alpine Road, Ovens", phone:"(03) 5752 1199", at:100},
-        {n:"Ringer Reef Winery", tag:"Winery", d:"Cycle-friendly winery, about 1 km from Porepunkah. Cellar door Thursday to Monday, 12pm to 5pm.", loc:"6835 Great Alpine Road, Porepunkah", at:108},
-        {n:"Rail Trail Cafe", tag:"Cafe", d:"Generous, Mexican-inspired menu. Closed Thursday and Friday, so it won't be open today.", loc:"2 Service Street, Porepunkah", at:110}]},
+        {n:"Ringer Reef Winery", tag:"Winery", d:"Cycle-friendly winery, about 1 km from Porepunkah. Cellar door Thursday to Monday, 12pm to 5pm.", loc:"6835 Great Alpine Road, Porepunkah", at:108}]},
       {ms:"Arrived Bright", km:116, sub:"Day 2 complete"},
       {sec:"Accommodation · Bright", stops:[{n:"Adina Lodge Bright", tag:"Check in 2pm", loc:"1 Ashwood Avenue, Bright 3741"}]},
       {sec:"Dinner · Bright", stops:[
-        {n:"Elm Dining", booked:"", tag:"Dinner", book:true, d:"Fine dining in an 1862 cottage. Small venue, books out. Reopens 30 Oct after a break.", loc:"98 Gavan Street, Bright", phone:"03 4705 8000"},
+        {n:"Elm Dining", booked:"", tag:"Dinner", book:true, d:"Fine dining in an 1862 cottage. Small venue, books out.", loc:"98 Gavan Street, Bright", phone:"03 4705 8000"},
         {n:"Bright Brewery", tag:"Dinner", d:"Relaxed brewpub with a tasting paddle. Dinner from 5pm, walk-ins welcome.", loc:"121 Great Alpine Road, Bright", phone:"(03) 5755 1301"}]}
     ]},
   { id:"r3", date:"2026-11-14", kind:"ride", n:3, title:"Bright to Myrtleford", short:"Bright to Myrtleford",
@@ -469,12 +468,12 @@ const DAYS = [
         {n:"Gum Tree Pies", tag:"Cafe", d:"Gourmet pies with unusual flavours. Hours not confirmed.", loc:"2a Anderson Street, Bright"}]},
       {sec:"Optional ride · Wandiligong", stops:[
         {n:"Wandiligong (Wandi)", tag:"Heritage", d:"Quiet heritage gold and orchard village. A gentle 5.5 km each way along Morses Creek, so 11 km return.", loc:"5.5 km from Bright"}]},
+      {ms:"Arrived Myrtleford", km:145, sub:"Day 3 complete"},
       {sec:"Lunch · your call", stops:[
         {n:"Reclaim Winebar & Cafe", tag:"Option", d:"Cafe meals and local wine in Myrtleford. Kitchen opens 11am.", loc:"55A Standish Street, Myrtleford", phone:"0430 093 633"}]},
-      {ms:"Arrived Myrtleford", km:145, sub:"Day 3 complete"},
       {sec:"Afternoon · Myrtleford", stops:[
         {n:"Myrtleford Mosaic Trail", tag:"Nature", d:"Sealed loop along the Ovens River with hidden mosaics. Can be started in town.", loc:"Rotary Park to Apex Park, Myrtleford"},
-        {n:"Nimmo Bridge swimming area", tag:"Nature", d:"Local swimming spot on the river. Not confirmed as part of the Mosaic Trail.", loc:"Myrtleford"}]},
+        {n:"Nimmo Bridge swimming area", tag:"Nature", d:"Local swimming spot on the river.", loc:"Myrtleford"}]},
       {sec:"Accommodation · Myrtleford", stops:[{n:"Myrtleford Hotel", tag:"Check in 1pm", loc:"67 Standish Street, Myrtleford 3737"}]},
       {sec:"Dinner · Myrtleford", stops:[
         {n:"Myrtleford Hotel", tag:"Dinner", d:"Country pub downstairs. Dinner Wednesday to Sunday from 5.30pm.", loc:"67 Standish Street, Myrtleford", phone:"0497 534 278"}]}
@@ -503,21 +502,7 @@ const DAYS = [
       {finished:true},
       {sec:"Finish · Wangaratta", stops:[
         {n:"Painters Island Holiday Park", tag:"Check in 3pm", d:"The cars are here. Time to reunite.", loc:"Pinkerton Crescent, Wangaratta 3677"},
-        {n:"Cafe the PreVue", tag:"Coffee", d:"Good spot for a debrief. Open daily, 8am to 4pm.", loc:"66-68 Faithfull Street, Wangaratta", phone:"03 5721 2092"},
-        {n:"Muddy Waters", tag:"Cafe", d:"Homemade food and a lolly bar. Listed as closed on Sundays, so likely shut today.", loc:"71 Reid Street, Wangaratta"}]}
-    ]},
-  { id:"post1", date:"2026-11-16", kind:"post", title:"Bright, post-trip", short:"Bright post-trip",
-    intro:"A few easy days back in Bright.",
-    start:["Goldfield Holiday Units","55 Gavan Street, Bright VIC 3741"],
-    alerts:[{t:"Who's staying", d:"One couple confirmed at Goldfield Holiday Units. Others to be confirmed."}],
-    flow:[
-      {sec:"Accommodation", stops:[{n:"Goldfield Holiday Units", tag:"Check in 3pm", loc:"55 Gavan Street, Bright 3741"}]}
-    ]},
-  { id:"post2", date:"2026-11-18", kind:"post", title:"Checkout, Goldfield Bright", short:"Checkout",
-    intro:"Pack up and head home.",
-    start:["Goldfield Holiday Units","55 Gavan Street, Bright VIC 3741"],
-    flow:[
-      {sec:"Accommodation", stops:[{n:"Goldfield Holiday Units", tag:"Check out 11am", loc:"55 Gavan Street, Bright 3741"}]}
+        {n:"Cafe the PreVue", tag:"Coffee", d:"Good spot for a debrief. Open daily, 8am to 4pm.", loc:"66-68 Faithfull Street, Wangaratta", phone:"03 5721 2092"}]}
     ]}
 ];
 
@@ -630,14 +615,13 @@ async function copyText(txt){ try{ await navigator.clipboard.writeText(txt); ret
 const nextDay = i => DAYS.find(d=>d.date>DAYS[i].date);
 function chargeAlert(i){
   const n=nextDay(i);
-  return n && n.kind==="ride" ? `<div class="alert charge"><b>Charge batteries tonight</b><span>Tomorrow is ${esc(n.title)}, ${n.km}.</span></div>` : "";
+  return n && n.kind==="ride" ? `<div class="alert charge"><b>Charge batteries tonight</b><span>Tomorrow is ${esc(n.title)}, ${esc(n.km.replace(/^About/,"about"))}.</span></div>` : "";
 }
-function contactRow(c){ return `<div class="contact"><div><b>${esc(c.name)}</b><small>${esc(c.detail)}${c.num?"":" · number to add"}</small>${c.num?`<span class="num">${esc(c.num)}</span>`:""}</div>${c.num?`<button class="copy" data-n="${esc(c.num)}">Copy</button>`:""}</div>` }
+function contactRow(c){ return `<div class="contact"><div><b>${esc(c.name)}</b><small>${esc(c.detail)}</small>${c.num?`<span class="num">${esc(c.num)}</span>`:""}</div>${c.num?`<button class="copy" data-n="${esc(c.num)}">Copy</button>`:""}</div>` }
 function bookingsHTML(){
   const rows=[];
   DAYS.forEach(d=>d.flow.forEach(f=>f.sec&&f.stops.forEach(s=>{ if(s.book) rows.push({d,s,meal:f.sec.split(" · ")[0]}) })));
-  return fold("bookings","Bookings",`${rows.map(({d,s,meal})=>`<div class="contact"><div><b>${esc(s.n)}</b><small>${shortDate(d)} · ${esc(meal)}</small><span class="bk ${s.booked?"yes":""}">${s.booked?"Booked: "+esc(s.booked):"Not booked yet"}</span>${s.phone?`<span class="num">${esc(s.phone)}</span>`:""}</div>${s.phone?`<button class="copy" data-n="${esc(s.phone)}">Copy</button>`:""}</div>`).join("")}
-    <p class="notes">Pick one of each pair. The other can be hidden in that day's list.</p>`);
+  return fold("bookings","Bookings",`${rows.map(({d,s,meal})=>`<div class="contact"><div><b>${esc(s.n)}</b><small>${shortDate(d)} · ${esc(meal)}</small><span class="bk ${s.booked?"yes":""}">${s.booked?"Booked: "+esc(s.booked):"Not booked yet"}</span>${s.phone?`<span class="num">${esc(s.phone)}</span>`:""}</div>${s.phone?`<button class="copy" data-n="${esc(s.phone)}">Copy</button>`:""}</div>`).join("")}`);
 }
 
 // A collapsible card on the Trip page. Closed until the viewer opens it; this phone remembers.
@@ -884,7 +868,7 @@ function bindVoice(root){
 const NOTE_IC={audio:PLAY, video:'<svg viewBox="0 0 24 24"><path d="M3 6h12a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm14 4 5-3v10l-5-3z"/></svg>'};
 const surpriseHTML = sur => sur.card
   ? `<button class="envelope" type="button" data-card="1"><span class="seal">${esc(sur.seal)}</span><b>${esc(sur.title)}</b><span>${esc(sur.hint)}</span></button>`
-  : `<section class="card surprise"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p>${voiceHTML(sur)}</section>`;
+  : `<section class="card surprise${sur.center?" center":""}"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p>${voiceHTML(sur)}</section>`;
 let bcAudio=null, bcSur=null;
 function bcStop(){ if(!bcAudio) return; bcAudio.a.pause(); bcAudio.b.querySelector(".ic").innerHTML=PLAY; bcAudio=null }
 function openCard(sur){

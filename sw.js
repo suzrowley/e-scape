@@ -1,5 +1,5 @@
 // Keeps the guide working with no signal. Pages: network first, then the saved copy. Everything else: saved copy first.
-const C="escape-20261107033034";
+const C="escape-20261107033455";
 const CORE=["./","index.html","test.html","icon-180.png","icon-192.png","icon-512.png","index.webmanifest","test.webmanifest"];
 self.addEventListener("install",e=>{ self.skipWaiting(); e.waitUntil(caches.open(C).then(c=>c.addAll(CORE))) });
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
