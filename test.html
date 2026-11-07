@@ -215,6 +215,9 @@ textarea:focus{outline:none;border-color:var(--sea)}
 .wpop .q{font-size:21px;line-height:1.35;margin:0}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
 .wq{display:grid;gap:2px;padding:10px 0;border-top:1px solid var(--line)}
+.rules{margin:0;padding-left:22px;display:grid;gap:8px;text-align:left;font-size:17px;line-height:1.4}
+.wpop .rules{font-size:17px}
+.wpop h2{font-size:23px;margin:0}
 .wq .q{font-size:17px;line-height:1.4}
 .finished{display:grid;gap:2px;justify-items:center;background:var(--sun);color:var(--on-sun);border:0;border-radius:14px;padding:14px;font:700 20px var(--body);cursor:pointer;width:100%}
 .voice{display:grid;gap:8px}
@@ -308,6 +311,13 @@ const WISDOM = [
   {date:"2026-11-15", at:"07:00", title:"The Athlete's Mindset", text:"Okay, you can call yourselves athletes now. The fact that your bikes have motors and your knees have opinions is entirely irrelevant."},
 ];
 // The Grand Finale plays from the Finished? button on the last ride day
+// Rest stop rules: one pop-up on the first ride morning, after The Briefing, then kept on the Trip page
+const RULES = {date:"2026-11-12", at:"07:00", label:"Rest stop rules", title:"The Fine Art of Taking a Break", items:[
+  "The break starts when the last rider arrives, not the first.",
+  "The others arriving is not the starting gun. Sit down. They've only just bloody got there.",
+  "Ten minutes for you and ten seconds for them is not equality.",
+  "Rested, hydrated and solved the state of the nation? Lovely. Now wait.",
+  "This is a cycling holiday, not a cycling race."]};
 const FINALE = {title:"The Grand Finale", text:"Four days, four riders, and not a single call to emergency services. We're calling that an outstanding success.", button:"Bloody legends!<br>Go have that drink."};
 
 const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
@@ -490,6 +500,7 @@ const TEST_SHIFT = -14;
 const shiftISO = iso => { const t=new Date(iso+"T12:00:00"); t.setDate(t.getDate()+TEST_SHIFT); return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0") };
 DAYS.forEach(d=>d.date=shiftISO(d.date));
 WISDOM.forEach(w=>w.date=shiftISO(w.date));
+RULES.date=shiftISO(RULES.date);
 Object.keys(SURPRISES).forEach(k=>{ const v=SURPRISES[k]; delete SURPRISES[k]; SURPRISES[shiftISO(k)]=v });
 
 const $ = s => document.querySelector(s);
@@ -617,6 +628,7 @@ function tripView(){
     ${todayIdx>=0?chargeAlert(todayIdx):""}
     <div class="btns"><button class="btn" id="open-focus">Open day</button><a class="btn alt" href="${mapUrl(f.start[1])}" target="_blank" rel="noopener">${f.kind==="ride"?"Start in Maps":"Open in Maps"}</a></div>
   </section>
+  ${rulesHTML()}
   ${wisdomHTML()}
   ${fold("trip","The trip",`<div class="days">${DAYS.map((d,i)=>{const [c,l]=statusFor(i);return `
       <button class="day-row" data-i="${i}"><span>${d.kind==="ride"?`Day ${d.n}: `:""}${esc(d.short)}<small>${shortDate(d)}${d.km?" · "+d.km:" · "+(d.kind==="pre"?"pre-trip":"post-trip")}</small></span><span class="pill ${c}">${d.kind==="ride"&&rideDone(d)?"Ridden":l}</span></button>`}).join("")}
@@ -830,6 +842,7 @@ function bindVoice(root){
       vnNow=a; b.innerHTML=PAUSE; a.play().catch(()=>{ b.innerHTML=PLAY; vnNow=null; vn.querySelector(".len").textContent="Couldn't play. Check you have signal." }) } });
 }
 function stamp(){ const n=new Date(); return {ts:n.getTime(), t:n.toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})} }
+function rulesHTML(){ return S.rules ? fold("rules",RULES.title,rulesList(),false,true) : "" }
 function wisdomHTML(){
   const got=WISDOM.map((w,i)=>({w,s:S["wq_"+i]})).filter(x=>x.s);
   if(S.finale) got.push({w:{text:FINALE.text},s:S.finale});
@@ -838,8 +851,9 @@ function wisdomHTML(){
   return fold("wisdom","Words of Questionable Wisdom",`
     ${got.map(x=>`<div class="wq"><span class="meta">${esc(x.s.t)}</span><span class="q">${esc(x.w.text)}</span></div>`).join("")}`,false,true);
 }
-function showPop(title,text,btn,done){
-  $("#wpop-t").textContent=title; $("#wpop-q").textContent=text; $("#wpop-ok").innerHTML=btn;
+const rulesList=()=>`<ol class="rules">${RULES.items.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`;
+function showPop(title,text,btn,done,html){
+  $("#wpop-t").textContent=title; if(html) $("#wpop-q").innerHTML=html; else $("#wpop-q").textContent=text; $("#wpop-q").className=html?"":"q"; $("#wpop-ok").innerHTML=btn;
   $("#wpop").hidden=false; $("#wpop-ok").focus();
   $("#wpop-ok").onclick=()=>{ $("#wpop").hidden=true; done() };
 }
@@ -849,7 +863,8 @@ function wisdomDue(){ const now=Date.now(), due=WISDOM.map((w,i)=>i).filter(i=>!
   const last=due.pop(); if(due.length){ due.forEach(i=>{ const t=wTime(WISDOM[i]); S["wq_"+i]={ts:t.getTime(), t:t.toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})} }); save(); if(ui.view==="trip") keep(()=>{}) } return last }
 function checkWisdom(){
   if(!$("#wpop").hidden) return;
-  const i=wisdomDue(); if(i<0) return;
+  const i=wisdomDue();
+  if(i<0){ if(!S.rules&&wTime(RULES).getTime()<=Date.now()) showPop(RULES.label,"","Noted",()=>{ S.rules=stamp(); save(); if(ui.view==="trip") keep(()=>{}) },`<h2>${esc(RULES.title)}</h2>${rulesList()}`); return }
   showPop("Words of Questionable Wisdom",WISDOM[i].text,"Noted",()=>{ S["wq_"+i]=stamp(); save(); if(ui.view==="trip") keep(()=>{}); setTimeout(checkWisdom,600) });
 }
 function storeCheck(){ let ok=false; try{ localStorage.setItem("m2m_probe","1"); ok=localStorage.getItem("m2m_probe")==="1"; localStorage.removeItem("m2m_probe") }catch(e){}
