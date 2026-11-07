@@ -220,6 +220,43 @@ textarea:focus{outline:none;border-color:var(--sea)}
 .wpop h2{font-size:23px;margin:0}
 .wq .q{font-size:17px;line-height:1.4}
 .finished{display:grid;gap:2px;justify-items:center;background:var(--sun);color:var(--on-sun);border:0;border-radius:14px;padding:14px;font:700 20px var(--body);cursor:pointer;width:100%}
+.envelope{display:grid;justify-items:center;gap:8px;text-align:center;padding:26px 16px;border-radius:16px;border:0;background:var(--sun);color:var(--on-sun);cursor:pointer;font:inherit;width:100%;margin:0 0 14px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.envelope .seal{width:64px;height:64px;border-radius:50%;background:var(--on-sun);color:var(--sun);display:grid;place-items:center;font:650 30px var(--display)}
+.envelope b{font:650 24px/1.2 var(--display)}
+.envelope>span:last-child{font-size:15px;opacity:.85}
+.bov{position:fixed;inset:0;z-index:55;background:rgba(8,20,22,.55);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(20px,env(safe-area-inset-top)) 16px 32px}
+.bov[hidden],.vv[hidden]{display:none}
+.bc{width:100%;max-width:420px;background:var(--card);color:var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);transform-origin:50% 0;animation:bcopen .7s cubic-bezier(.2,.9,.3,1.15) both}
+@keyframes bcopen{from{transform:perspective(900px) rotateX(-80deg) scale(.9);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.bc{animation:none}}
+.bc-top{background:var(--deep);color:var(--on-deep);text-align:center;padding:34px 20px 28px}
+.bc-top h2{font:650 44px/1.05 var(--display);margin:0;color:inherit}
+.bc-bar{width:56px;height:4px;background:var(--sun);border-radius:2px;margin:16px auto 0}
+.bc-body{padding:22px 20px 24px}
+#bc-close{width:100%}
+.bc-msg{font-size:19px;margin:0;text-align:center;white-space:pre-line}
+.bc-notes{display:grid;gap:12px;margin:20px 0 22px;padding:0;list-style:none}
+.bnote{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--alert-bg);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;font:inherit;color:inherit}
+.bnote{--kb:var(--alert-bg);--kc:var(--sea);background:var(--kb);border-color:transparent}
+.k-felix{--kb:#DCE5F0;--kc:#3A6EA5}.k-hugo{--kb:#DCE8DC;--kc:#3C7650}.k-kai{--kb:#F6ECC9;--kc:#8F6A0C}.k-liya{--kb:#F3DCDD;--kc:#B4475A}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .k-felix{--kb:#2F3F52;--kc:#8DB4E2}:root:not([data-theme=light]) .k-hugo{--kb:#344A3C;--kc:#8FC9A0}:root:not([data-theme=light]) .k-kai{--kb:#4A4128;--kc:#E4C568}:root:not([data-theme=light]) .k-liya{--kb:#4A3439;--kc:#E89AA7}}
+.kem{flex:none;font-size:30px;line-height:1}
+.bc-notes li:nth-child(odd) .bnote{transform:rotate(-1deg)}
+.bc-notes li:nth-child(even) .bnote{transform:rotate(1deg)}
+.bnote .prog i{background:var(--kc)}
+.bnote .ic{flex:none;width:46px;height:46px;border-radius:50%;background:var(--kc);color:#fff;display:grid;place-items:center}
+.bnote .ic svg{width:20px;height:20px;fill:currentColor}
+.bnote .tx{flex:1;min-width:0}
+.bnote b{display:block;font:650 18px/1.25 var(--display)}
+.bnote small{display:block;color:var(--muted);font-size:15px}
+.bnote .bsub{font-style:italic}
+.prog{display:block;height:4px;background:var(--line);border-radius:2px;margin-top:8px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--sun)}
+.vv{position:fixed;inset:0;background:#000;z-index:70;display:flex;flex-direction:column}
+.vv video{flex:1;width:100%;min-height:0;background:#000}
+.vv .vbar{display:flex;align-items:center;justify-content:space-between;padding:max(12px,env(safe-area-inset-top)) 16px 12px;color:#fff}
+.vv .vbar b{font:650 17px var(--display)}
+.vv .vbar button{background:#fff;color:#000;border:0;border-radius:10px;padding:10px 16px;font:700 16px var(--body);cursor:pointer}
 .voice{display:grid;gap:8px}
 .vn{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.35);border-radius:12px;padding:8px 10px}
 .play{width:44px;height:44px;border-radius:50%;border:0;background:var(--on-sun);color:var(--sun);display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
@@ -246,6 +283,8 @@ textarea:focus{outline:none;border-color:var(--sea)}
 </div></nav>
 <div class="toast" id="toast" hidden></div>
 <div class="wpop" id="wpop" hidden role="dialog" aria-modal="true" aria-labelledby="wpop-t"><div class="pc"><span class="meta" id="wpop-t"></span><p class="q" id="wpop-q"></p><button class="btn" type="button" id="wpop-ok"></button></div></div>
+<div class="bov" id="bov" hidden><div class="bc" role="dialog" aria-modal="true" aria-labelledby="bc-h"><div class="bc-top"><h2 id="bc-h"></h2><div class="bc-bar"></div></div><div class="bc-body"><p class="bc-msg" id="bc-msg"></p><ul class="bc-notes" id="bc-notes"></ul><button class="btn wide" type="button" id="bc-close">Close</button></div></div></div>
+<div class="vv" id="vv" hidden><div class="vbar"><b id="vv-t"></b><button type="button" id="vv-close">Close</button></div><video id="vv-v" playsinline controls preload="none"></video></div>
 <canvas id="fx" aria-hidden="true" hidden></canvas>
 
 <script>
@@ -298,8 +337,13 @@ const BIKE_SHOPS = [
 // Example: "2026-11-12": {title:"Good luck today", text:"..."}
 // To do: Tony's birthday surprise for "2026-11-10".
 const SURPRISES = {
-  "2026-11-10": {title:"Happy birthday, Tony", text:"Another lap of the sun, and this one comes with a view of the lakes. Press play for a message.", confetti:true,
-    voice:[{who:"From Suz", src:"voice/test-note.mp3", len:"0:09"}]}
+  "2026-11-10": {card:true, seal:"T", title:"Something for Tony", hint:"Tap to open",
+    head:"Happy Birthday!", text:"We hope you have a fabulous day!\nHere are a few messages for you, and lunch today is covered by your kids. xxx",
+    notes:[
+      {who:"A message from Felix", kid:"felix", em:"🎂", kind:"audio", src:"voice/felix.mp3", len:"Voice note · 14 sec"},
+      {who:"A message from Hugo", kid:"hugo", em:"🎉", kind:"audio", src:"voice/hugo.mp3", len:"Voice note · 1 min 41"},
+      {who:"A message from Kai", kid:"kai", em:"🥳", kind:"audio", src:"voice/kai.mp3", len:"Voice note · 5 sec", sub:"Visuals will be shared via WhatsApp"},
+      {who:"A message from Liya", kid:"liya", em:"🎁", kind:"audio", src:"voice/liya.mp3", len:"Voice note · 2 sec", sub:"Performance video will be shared via WhatsApp"}]}
 };
 
 // Words of Questionable Wisdom. Each pops up from its start time until it's noted, one at a time, in this order.
@@ -610,7 +654,7 @@ function tripView(){
   const sur = SURPRISES[todayISO];
   return `
   <section class="card testbar"><span class="meta">Test run</span><p>Every date is ${-TEST_SHIFT} days earlier than the real trip, so Thu 12 Nov is ${shortDate(DAYS.find(d=>d.id==="r1"))} here. Ticks here never touch the real guide.</p><p class="notes">${storeCheck()}</p><div class="btns"><button class="btn alt wide" id="test-clear">Clear this phone's test data</button></div></section>
-  ${sur?`<section class="card surprise"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p>${voiceHTML(sur)}</section>`:""}
+  ${sur?surpriseHTML(sur):""}
   ${fold("progress",`Your progress · ${p.km} km`,`    <div class="tally">
       <div class="stat"><b>${p.done}/${MS.length}</b><span>milestones</span></div>
       <div class="stat"><b>${p.km}</b><span>km done</span></div>
@@ -628,8 +672,6 @@ function tripView(){
     ${todayIdx>=0?chargeAlert(todayIdx):""}
     <div class="btns"><button class="btn" id="open-focus">Open day</button><a class="btn alt" href="${mapUrl(f.start[1])}" target="_blank" rel="noopener">${f.kind==="ride"?"Start in Maps":"Open in Maps"}</a></div>
   </section>
-  ${rulesHTML()}
-  ${wisdomHTML()}
   ${fold("trip","The trip",`<div class="days">${DAYS.map((d,i)=>{const [c,l]=statusFor(i);return `
       <button class="day-row" data-i="${i}"><span>${d.kind==="ride"?`Day ${d.n}: `:""}${esc(d.short)}<small>${shortDate(d)}${d.km?" · "+d.km:" · "+(d.kind==="pre"?"pre-trip":"post-trip")}</small></span><span class="pill ${c}">${d.kind==="ride"&&rideDone(d)?"Ridden":l}</span></button>`}).join("")}
     </div>`,false,true)}
@@ -646,6 +688,8 @@ function tripView(){
       <li>Water and toilets are in the towns and at most old station stops.</li>
       <li>Spring is magpie swooping season, and snakes are out on warm days.</li>
     </ul>`)}
+  ${rulesHTML()}
+  ${wisdomHTML()}
   <section class="card">
     <h3>Still to check</h3>
     ${CHECKS.map(([t,d])=>`<div class="flag"><b>${esc(t)}</b>${esc(d)}</div>`).join("")}
@@ -715,7 +759,7 @@ function dayView(){
   const anyOpen=d.flow.some(f=>f.sec&&!S[secId(d,f)]);
   const sur = todayISO>=d.date ? SURPRISES[d.date] : null;
   return `
-  ${sur?`<section class="card surprise"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p>${voiceHTML(sur)}</section>`:""}
+  ${sur?surpriseHTML(sur):""}
   <section class="card"><details class="pack head" data-dfold="head" ${sget("dfold_head_"+d.id,true)?"open":""}>
     <summary><span class="head-sum"><span class="meta">${ride?`Ride day ${d.n} · `:(d.kind==="pre"?"Pre-trip · ":"Post-trip · ")}${fmt(d,{weekday:"long",day:"numeric",month:"long"})}</span>
     <h2>${esc(d.title)}</h2><span class="when-closed notes">${ride?d.km+" · ":""}Tap to show the overview</span></span></summary>
@@ -841,6 +885,31 @@ function bindVoice(root){
     b.onclick=()=>{ const was=vnNow===a; if(vnNow){ vnNow.pause() } all.forEach(x=>x.querySelector(".play").innerHTML=PLAY); vnNow=null; if(was) return;
       vnNow=a; b.innerHTML=PAUSE; a.play().catch(()=>{ b.innerHTML=PLAY; vnNow=null; vn.querySelector(".len").textContent="Couldn't play. Check you have signal." }) } });
 }
+// Birthday card: sealed on its day until tapped, then opens with confetti. Stays on the page to open again.
+const NOTE_IC={audio:PLAY, video:'<svg viewBox="0 0 24 24"><path d="M3 6h12a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm14 4 5-3v10l-5-3z"/></svg>'};
+const surpriseHTML = sur => sur.card
+  ? `<button class="envelope" type="button" data-card="1"><span class="seal">${esc(sur.seal)}</span><b>${esc(sur.title)}</b><span>${esc(sur.hint)}</span></button>`
+  : `<section class="card surprise"><span class="meta">Just for today</span><h2>${esc(sur.title)}</h2><p>${esc(sur.text)}</p>${voiceHTML(sur)}</section>`;
+let bcAudio=null, bcSur=null;
+function bcStop(){ if(!bcAudio) return; bcAudio.a.pause(); bcAudio.b.querySelector(".ic").innerHTML=PLAY; bcAudio=null }
+function openCard(sur){
+  bcSur=sur; if(vnNow){ vnNow.pause(); vnNow=null }
+  $("#bc-h").textContent=sur.head; $("#bc-msg").textContent=sur.text;
+  $("#bc-notes").innerHTML=sur.notes.map((n,i)=>`<li><button class="bnote k-${n.kid||""}" type="button" data-n="${i}"><span class="ic">${NOTE_IC[n.kind]}</span><span class="tx"><b>${esc(n.who)}</b><small>${esc(n.len)}</small>${n.sub?`<small class="bsub">${esc(n.sub)}</small>`:""}${n.kind==="audio"?'<span class="prog"><i></i></span>':""}</span>${n.em?`<span class="kem" aria-hidden="true">${n.em}</span>`:""}</button></li>`).join("");
+  const ov=$("#bov"); ov.hidden=true; void ov.offsetWidth; ov.hidden=false; ov.scrollTop=0; setTimeout(()=>fx("confetti"),250);
+}
+document.addEventListener("click",e=>{ const env=e.target.closest(".envelope[data-card]"); if(env){ const sur=SURPRISES[todayISO]||DAYS.map(d=>SURPRISES[d.date]).find(x=>x&&x.card); if(sur) openCard(sur) } });
+$("#bc-notes").addEventListener("click",e=>{
+  const b=e.target.closest(".bnote"); if(!b) return; const n=bcSur.notes[b.dataset.n];
+  if(n.kind==="video"){ bcStop(); $("#vv-t").textContent=n.who; const v=$("#vv-v"); v.src=n.src; $("#vv").hidden=false; v.play().catch(()=>{}); return }
+  if(bcAudio&&bcAudio.b===b){ const a=bcAudio.a; if(a.paused){ a.play(); b.querySelector(".ic").innerHTML=PAUSE } else { a.pause(); b.querySelector(".ic").innerHTML=PLAY } return }
+  bcStop(); const a=new Audio(n.src), bar=b.querySelector(".prog i"); bcAudio={a,b};
+  a.ontimeupdate=()=>{ if(a.duration) bar.style.width=(a.currentTime/a.duration*100)+"%" };
+  a.onended=()=>{ b.querySelector(".ic").innerHTML=PLAY; bar.style.width="0"; bcAudio=null };
+  b.querySelector(".ic").innerHTML=PAUSE; a.play().catch(()=>{ b.querySelector(".ic").innerHTML=PLAY; b.querySelector("small").textContent="Couldn't play. Check you have signal."; bcAudio=null });
+});
+$("#vv-close").onclick=()=>{ const v=$("#vv-v"); v.pause(); v.removeAttribute("src"); v.load(); $("#vv").hidden=true };
+$("#bc-close").onclick=()=>{ bcStop(); stopFx(); $("#bov").hidden=true };
 function stamp(){ const n=new Date(); return {ts:n.getTime(), t:n.toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})} }
 function rulesHTML(){ return S.rules ? fold("rules",RULES.title,rulesList(),false,true) : "" }
 function wisdomHTML(){
