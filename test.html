@@ -850,7 +850,7 @@ function render(){
   v.querySelectorAll(".copy").forEach(b=>b.onclick=async()=>{ b.textContent = await copyText(b.dataset.n) ? "Copied" : b.dataset.n });
 
   if(ui.view==="trip"){
-    v.querySelectorAll("details[data-fold]").forEach(x=>x.ontoggle=()=>sset("fold_"+x.dataset.fold,x.open));
+    v.querySelectorAll("details[data-fold]").forEach(x=>x.ontoggle=()=>sset("fold_"+x.dataset.fold,x.open?true:0));
     $("#open-focus").onclick=()=>{ ui.view="day"; ui.day=focusIdx; render(); window.scrollTo(0,0) };
     v.querySelectorAll(".day-row").forEach(r=>r.onclick=()=>{ ui.view="day"; ui.day=+r.dataset.i; render(); window.scrollTo(0,0) });
     $("#save").onclick=async()=>{ toast(await copyText(summary()) ? "Summary copied" : "Couldn't copy on this phone") };
