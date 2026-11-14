@@ -305,7 +305,7 @@ textarea:focus{outline:none;border-color:var(--sea)}
 <script>
 /* ===== Edit trip details here ===== */
 const TRIP_NAME = "The Great E-scape";
-const TOTAL_KM = 210;
+const TOTAL_KM = 201;
 // Progress spine: km and short label for each dot. "day" is the day it opens.
 const SPINE = [
   {km:0,   label:"Wang.",   day:"r1"},
@@ -314,7 +314,7 @@ const SPINE = [
   {km:87,  label:"Myrtle.", day:"r2"},
   {km:116, label:"Bright",  day:"r2"},
   {km:145, label:"Myrtle.", day:"r3"},
-  {km:210, label:"Wang.",   day:"r4"}
+  {km:201, label:"Wang.",   day:"r4"}
 ];
 
 // One master packing list, the same every day. Each phone can edit its own copy.
@@ -493,26 +493,25 @@ const DAYS = [
         {n:"Myrtleford Hotel", tag:"Dinner", d:"Country pub downstairs. Dinner Wednesday to Sunday from 5.30pm.", loc:"67 Standish Street, Myrtleford", phone:"0497 534 278"}]}
     ]},
   { id:"r4", date:"2026-11-15", kind:"ride", n:4, title:"Myrtleford to Wangaratta", short:"Myrtleford to Wangaratta",
-    km:"65 km", grade:"Intermediate, then easy", climb:"Taylors Gap, then mostly downhill and flat", surface:"Sealed trail and quiet country roads",
-    terrain:"Uphill to Taylors Gap, down to Everton, then flat via Milawa and Oxley.",
-    intro:"The home run, with a cheese and wine stop at Milawa. Pace yourselves on the tastings ✨",
+    km:"About 56 km", grade:"Intermediate, then easy", climb:"Taylors Gap, then mostly downhill and flat", surface:"Sealed trail",
+    terrain:"Uphill to Taylors Gap, down to Everton, then back along the main trail to Wangaratta, the way you came on Day 1.",
+    intro:"The home run, back along the trail to where it all began. Soak up every last kilometre ✨",
     start:["Myrtleford Hotel","Myrtleford Hotel, 67 Standish Street, Myrtleford VIC 3737"], finish:["Painters Island Holiday Park","Painters Island Holiday Park, Pinkerton Crescent, Wangaratta VIC 3677"],
     alerts:[{t:"Climb out of Myrtleford", d:"The trail climbs to Taylors Gap first thing. Steady, with a pinch at the top."},
-            {t:"Country roads to Milawa", d:"Part of the Everton to Milawa leg uses quiet roads shared with cars. Ride single file."},
-            {t:"Battery", d:"65 km is close to your range. Charge fully the night before."}],
-    water:"Water and toilets in Myrtleford, at Everton Station and at Apex Park in Wangaratta. Milawa has shops and cafes, but no public toilets confirmed.",
-    highlights:["Downhill from Taylors Gap to Everton","Milawa Cheese Company and Brown Brothers","Rolling back into Wangaratta where it all started"],
+            {t:"Battery", d:"About 56 km, which is within your range. Still charge fully the night before."}],
+    water:"Water and toilets in Myrtleford, at Everton Station and at Apex Park in Wangaratta. Toilets at Tarrawingee and Bowser stations.",
+    highlights:["Downhill from Taylors Gap to Everton","Rolling back into Wangaratta where it all started"],
     flow:[
       {ms:"Departed Myrtleford", km:145, sub:"Day 4 start"},
       {sec:"Breakfast · Myrtleford", stops:[
         {n:"Myrtleford Bakehouse", tag:"Breakfast", d:"Opens early (5.30am listed). Easy and practical.", loc:"52 Standish Street, Myrtleford"}]},
+      {ms:"Arrived Everton", km:173, sub:"About 28 km from Myrtleford"},
       {sec:"Trail stop · Everton", stops:[
-        {n:"Everton General Store", tag:"Cafe", d:"Last chance for the milkshakes.", loc:"Everton, about 28 km from Myrtleford", at:173}]},
-      {ms:"Arrived Milawa", km:191},
-      {sec:"Lunch · Milawa", stops:[
-        {n:"Milawa Cheese Company", tag:"Produce", d:"Award-winning cheeses, tastings and takeaway. Open daily, 9am to 5pm.", loc:"17 Factory Lane, Milawa", phone:"03 5727 3589"},
-        {n:"Brown Brothers", booked:"", tag:"Lunch", book:true, d:"Cellar door tastings 11am to 4pm daily. Restaurant lunch Thursday to Monday, 12pm to 3.30pm, so book for Sunday.", loc:"244 Milawa-Bobinawarrah Road, Milawa", phone:"03 5720 5500"}]},
-      {ms:"Arrived Wangaratta", km:210, sub:"Ride complete"},
+        {n:"Everton General Store", tag:"Cafe", d:"Last chance for the milkshakes. Hours not confirmed, so call ahead if you're counting on lunch.", loc:"Everton, about 28 km from Myrtleford", at:173},
+        {n:"Everton Hotel", tag:"Lunch", d:"Country pub. Lunch hours not confirmed, so check before you rely on it.", loc:"Everton", at:173}]},
+      {sec:"Trail stop · Bowser", stops:[
+        {n:"Bowser rest stop", tag:"Trail", d:"Old station stop with toilets. Last rest before Wangaratta.", loc:"About 8 km from Wangaratta", at:193}]},
+      {ms:"Arrived Wangaratta", km:201, sub:"Ride complete"},
       {finished:true},
       {sec:"Finish · Wangaratta", stops:[
         {n:"Painters Island Holiday Park", tag:"Check in 3pm", d:"The cars are here. Time to reunite.", loc:"Pinkerton Crescent, Wangaratta 3677"},
@@ -531,7 +530,6 @@ const CHECKS = [
   ["Elevation", "Only Wangaratta to Everton (174 m) is published. Other climbs are described, not measured."],
   ["Venues", "Everything was rechecked on 27 and 28 Oct. Still unconfirmed: hours for Aroma Deli, Tiny, Gum Tree Pies, the Pumpkin Seed Co. and both Everton stops."],
   ["Day 3 lunch", "To be decided. Gapsted Estate was sold in Oct 2026 and its restaurant won't reopen, so it's no longer a milestone. Day 3 is now about 30 km (Bright to Myrtleford is 31 km on the official page), plus about 12 km if they ride out to Gapsted."],
-  ["Milawa lunch", "Milawa Kitchen has closed, so Brown Brothers is now the sit-down lunch on Sun 15 Nov. Worth booking."],
   ["Sunday in Wangaratta", "Muddy Waters is listed as closed on Sundays. Cafe the PreVue is open daily, 8am to 4pm."],
   ["Rail Trail Cafe", "Closed Thursday and Friday, so it won't be open on Day 2. Left in for reference."],
   ["Accommodation numbers", "Armour Motor Inn and Adina Lodge are from their own websites. Myrtleford Hotel's number is from its OpenTable listing and may be the restaurant line. Driftwood is an Airbnb with no public number."],
